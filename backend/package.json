@@ -4,13 +4,8 @@
     "build": "rimraf ./dist && tsc",
     "start-prod": "npm run build && node dist/index.js",
     "lint": "eslint . --ext .ts",
-    "prettier": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "prettier": "prettier --config .prettierrc src/**/*.ts --write",
     "pulldb": "npx prisma db pull"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run prettier-format && npm run lint"
-    }
   },
   "dependencies": {
     "cors": "^2.8.5",
