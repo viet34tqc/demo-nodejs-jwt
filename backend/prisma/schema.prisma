@@ -11,25 +11,25 @@ datasource db {
 }
 
 model Post {
-  id        Int        @id @default(autoincrement())
-  title     String     @db.VarChar(255)
-  createdAt DateTime   @default(now()) @db.Timestamp(6)
+  id        Int       @id @default(autoincrement())
+  title     String    @db.VarChar(255)
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
   content   String?
   authorId  Int
   likes     Int
-  author    User       @relation(fields: [authorId], references: [id])
-  Comments  Comments[]
+  author    User      @relation(fields: [authorId], references: [id])
+  comments  Comment[]
 }
 
 model User {
-  id       Int        @id @default(autoincrement())
-  email    String     @unique @db.VarChar(255)
-  name     String?    @db.VarChar(255)
+  id       Int       @id @default(autoincrement())
+  email    String    @unique @db.VarChar(255)
+  name     String?   @db.VarChar(255)
   posts    Post[]
-  Comments Comments[]
+  comments Comment[]
 }
 
-model Comments {
+model Comment {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @db.Timestamp(6)
   content   String?
