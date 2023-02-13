@@ -1,6 +1,8 @@
 import { Prisma } from '@prisma/client';
+import { compareSync, hashSync } from 'bcrypt';
 import { Request, Response } from 'express';
 import prisma from '../../config/prismaClient';
+import { EMAIL_EXISTED, INVALID_PASS, USER_NOT_EXISTED } from './constants';
 
 class UserController {
   async register(req: Request, res: Response) {
@@ -10,17 +12,41 @@ class UserController {
         data: {
           name,
           email,
-          password
+          password: hashSync(password, 8)
         }
       });
-      res.json(user);
+      res.status(200).json(user);
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        res.json(
-          'This email is already existed'
-        );
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+        res.status(404).json({ message: EMAIL_EXISTED });
       } else if (error instanceof Error) {
-        res.json(error.message);
+        res.status(404).json({ message: error.message });
+      }
+    }
+  }
+  async login(req: Request, res: Response) {
+    const { email, password } = req.body;
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          email
+        }
+      });
+
+      // User email not found
+      if (!user) {
+        return res.status(404).send(USER_NOT_EXISTED);
+      }
+
+      const isPasswordValidated = compareSync(password, user.password as string);
+      if (!isPasswordValidated) {
+        res.status(401).send({ message: INVALID_PASS });
+      } else {
+        res.status(200).json(user);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(404).send({ message: error.message });
       }
     }
   }
@@ -39,7 +65,7 @@ class UserController {
       });
     } catch (error) {
       if (error instanceof Error) {
-        res.json(error.message);
+        res.send({ message: error.message });
       }
     }
   }

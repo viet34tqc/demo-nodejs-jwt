@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
-import { AuthSchemaType } from './authValidation';
+import { AuthSchemaType } from './authValidationSchema';
 
 export const authMiddleware =
   (schema: AuthSchemaType) =>
