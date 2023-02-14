@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv';
 import express from 'express';
 import initUserRoutes from './features/auth/authRoutes';
+import initPostRoutes from './features/post/postRoutes';
 
 dotenv.config();
 const app = express();
@@ -13,6 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 initUserRoutes(app);
+initPostRoutes(app);
 
 app.listen(port, () => {
   console.log(`Server running at port ${port}`);

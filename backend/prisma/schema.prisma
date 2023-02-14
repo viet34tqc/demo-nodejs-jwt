@@ -26,6 +26,7 @@ model User {
   email    String    @unique @db.VarChar(255)
   name     String?   @db.VarChar(255)
   password String?
+  role     Role      @default(SUBSCRIBER)
   posts    Post[]
   comments Comment[]
 }
@@ -38,4 +39,9 @@ model Comment {
   postId    Int
   post      Post     @relation(fields: [postId], references: [id])
   author    User     @relation(fields: [authorId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  SUBSCRIBER
 }
