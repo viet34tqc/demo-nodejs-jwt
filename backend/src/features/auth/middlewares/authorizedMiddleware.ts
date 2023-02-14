@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
 import { accessTokenSecret } from '../../../config/jwtConfig';
 import prisma from '../../../config/prismaClient';
-import { NO_TOKEN, USER_NOT_EXISTED } from '../constants';
+import { NO_TOKEN, REQUIRE_ADMIN_ROLE, USER_NOT_EXISTED } from '../constants';
 import { verifyJwt } from '../utils';
 
 export interface CustomRequest extends Request {
@@ -12,7 +12,7 @@ export interface CustomRequest extends Request {
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   const accessToken = req.header('Authorization')?.replace('Bearer ', '');
   if (!accessToken) {
-    return res.status(403).send({ message: NO_TOKEN });
+    return res.status(403).send({ success: false, message: NO_TOKEN });
   }
 
   try {
@@ -25,8 +25,8 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
     // If error like wrong token, expired token...
     if (error instanceof Error) {
       return res.status(401).send({
-        auth: false,
-        message: error
+        success: false,
+        message: error.message
       });
     }
   }
@@ -35,7 +35,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
 export const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.body;
   if (id) {
-    return res.json(400).send({ message: USER_NOT_EXISTED });
+    return res.json(400).send({ success: false, message: USER_NOT_EXISTED });
   }
   try {
     const user = await prisma.user.findUnique({
@@ -44,17 +44,18 @@ export const isAdmin = async (req: Request, res: Response, next: NextFunction) =
       }
     });
     if (!user) {
-      return res.json(400).send({ message: USER_NOT_EXISTED });
+      return res.json(400).send({ success: false, message: USER_NOT_EXISTED });
     }
     if (user.role !== 'ADMIN') {
       res.status(403).send({
-        message: 'REQUIRED'
+        success: false,
+        message: REQUIRE_ADMIN_ROLE
       });
     }
     next();
   } catch (error) {
     if (error instanceof Error) {
-      res.send({ message: error.message });
+      res.send({ success: false, message: error.message });
     }
   }
 };

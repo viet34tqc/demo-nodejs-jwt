@@ -17,6 +17,8 @@ export const verifyJwt = (token: string, secret: string) => {
   try {
     return verify(token, secret);
   } catch (error) {
-    return error;
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
   }
 };

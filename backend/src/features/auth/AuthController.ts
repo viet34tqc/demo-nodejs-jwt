@@ -24,12 +24,12 @@ class UserController {
           password: hashSync(password, 8)
         }
       });
-      res.status(200).json(user);
+      res.status(200).json({ success: true, data: user });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        res.status(404).json({ message: EMAIL_EXISTED });
+        res.status(404).json({ success: false, message: EMAIL_EXISTED });
       } else if (error instanceof Error) {
-        res.status(404).json({ message: error.message });
+        res.status(404).json({ success: false, message: error.message });
       }
     }
   }
@@ -49,7 +49,7 @@ class UserController {
 
       const isPasswordValidated = compareSync(password, user.password as string);
       if (!isPasswordValidated) {
-        return res.status(401).send({ message: INVALID_PASS });
+        return res.status(401).send({ success: false, message: INVALID_PASS });
       }
 
       // Generate JWT tokens
@@ -58,21 +58,24 @@ class UserController {
       const refreshToken = signJwt({ id: user.id }, refreshTokenSecret, refreshTokenExpiration);
 
       res.status(200).json({
-        ...user,
-        role: user.role,
-        accessToken,
-        refreshToken
+        success: true,
+        data: {
+          ...user,
+          role: user.role,
+          accessToken,
+          refreshToken
+        }
       });
     } catch (error) {
       if (error instanceof Error) {
-        res.status(404).send({ message: error.message });
+        res.status(404).send({ success: false, message: error.message });
       }
     }
   }
   refreshToken(req: Request, res: Response) {
     const refreshToken = req.header('Authorization')?.replace('Bearer ', '');
     if (!refreshToken) {
-      return res.status(403).send({ message: NO_TOKEN });
+      return res.status(403).send({ success: false, message: NO_TOKEN });
     }
     try {
       const decoded = verifyJwt(refreshToken, accessTokenSecret) as JwtPayload;
@@ -80,7 +83,7 @@ class UserController {
       return res.status(200).json({ accessToken });
     } catch (error) {
       if (error instanceof Error) {
-        res.status(404).send({ message: error.message });
+        res.status(404).send({ success: false, message: error.message });
       }
     }
   }
