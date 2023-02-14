@@ -1,10 +1,16 @@
 import { Prisma } from '@prisma/client';
 import { compareSync, hashSync } from 'bcrypt';
 import { Request, Response } from 'express';
-import { sign } from 'jsonwebtoken';
-import { jwtExpiration, jwtSecret } from '../../config/jwtConfig';
+import { JwtPayload } from 'jsonwebtoken';
+import {
+  accessTokenExpiration,
+  accessTokenSecret,
+  refreshTokenExpiration,
+  refreshTokenSecret
+} from '../../config/jwtConfig';
 import prisma from '../../config/prismaClient';
-import { EMAIL_EXISTED, INVALID_PASS, USER_NOT_EXISTED } from './constants';
+import { EMAIL_EXISTED, INVALID_PASS, NO_TOKEN, USER_NOT_EXISTED } from './constants';
+import { signJwt, verifyJwt } from './utils';
 
 class UserController {
   async register(req: Request, res: Response) {
@@ -46,16 +52,16 @@ class UserController {
         return res.status(401).send({ message: INVALID_PASS });
       }
 
-      // Generate JWT token
+      // Generate JWT tokens
       // We are only including user id in the payload for security
-      const accessToken = sign({ id: user.id }, jwtSecret, {
-        expiresIn: jwtExpiration
-      });
+      const accessToken = signJwt({ id: user.id }, accessTokenSecret, accessTokenExpiration);
+      const refreshToken = signJwt({ id: user.id }, refreshTokenSecret, refreshTokenExpiration);
 
       res.status(200).json({
         ...user,
         role: user.role,
-        accessToken
+        accessToken,
+        refreshToken
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -63,22 +69,18 @@ class UserController {
       }
     }
   }
-  async update(req: Request, res: Response) {
-    const { id, email, name, password } = req.body;
+  refreshToken(req: Request, res: Response) {
+    const refreshToken = req.header('Authorization')?.replace('Bearer ', '');
+    if (!refreshToken) {
+      return res.status(403).send({ message: NO_TOKEN });
+    }
     try {
-      await prisma.user.update({
-        where: {
-          id: +id
-        },
-        data: {
-          email,
-          name,
-          password
-        }
-      });
+      const decoded = verifyJwt(refreshToken, accessTokenSecret) as JwtPayload;
+      const accessToken = signJwt({ id: decoded.id }, accessTokenSecret, accessTokenExpiration);
+      return res.status(200).json({ accessToken });
     } catch (error) {
       if (error instanceof Error) {
-        res.send({ message: error.message });
+        res.status(404).send({ message: error.message });
       }
     }
   }

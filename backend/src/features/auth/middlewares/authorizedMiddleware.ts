@@ -1,34 +1,35 @@
 import { NextFunction, Request, Response } from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import { jwtSecret } from '../../../config/jwtConfig';
+import { JwtPayload } from 'jsonwebtoken';
+import { accessTokenSecret } from '../../../config/jwtConfig';
 import prisma from '../../../config/prismaClient';
 import { NO_TOKEN, USER_NOT_EXISTED } from '../constants';
+import { verifyJwt } from '../utils';
 
 export interface CustomRequest extends Request {
   jwtDecoded: string | JwtPayload;
 }
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-  if (!token) {
+  const accessToken = req.header('Authorization')?.replace('Bearer ', '');
+  if (!accessToken) {
     return res.status(403).send({ message: NO_TOKEN });
   }
 
-  // Verify token
-  jwt.verify(token, jwtSecret, (err, decoded) => {
-    // If error like wrong toke, expired token...
-    if (err) {
-      return res.status(401).send({
-        auth: false,
-        message: err.message
-      });
-    }
-
-    // Else, save the decoded payload for the next request after successful login
+  try {
+    // Save the decoded payload for the next request after successful login
     // The decoded payload should be like this { id: 6, iat: 1676349774, exp: 1676436174 }
+    const decoded = verifyJwt(accessToken, accessTokenSecret);
     (req as CustomRequest).jwtDecoded = decoded as string | JwtPayload;
     next();
-  });
+  } catch (error) {
+    // If error like wrong token, expired token...
+    if (error instanceof Error) {
+      return res.status(401).send({
+        auth: false,
+        message: error
+      });
+    }
+  }
 };
 
 export const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
