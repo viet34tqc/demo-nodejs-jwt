@@ -34,7 +34,7 @@ class UserController {
     }
   }
   async login(req: Request, res: Response) {
-    const { email, password } = req.body;
+    const { email } = req.body;
     try {
       const user = await prisma.user.findUnique({
         where: {
@@ -47,7 +47,7 @@ class UserController {
         return res.status(404).send(USER_NOT_EXISTED);
       }
 
-      const isPasswordValidated = compareSync(password, user.password as string);
+      const isPasswordValidated = compareSync(req.body.password, user.password as string);
       if (!isPasswordValidated) {
         return res.status(401).send({ success: false, message: INVALID_PASS });
       }
@@ -69,10 +69,13 @@ class UserController {
         httpOnly: true
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...rest } = user;
+
       res.status(200).json({
         success: true,
         data: {
-          ...user,
+          ...rest,
           role: user.role
         }
       });
@@ -95,13 +98,27 @@ class UserController {
       }
     }
   }
-  getCurrentUser(req: Request, res: Response) {
+  async getCurrentUser(req: Request, res: Response) {
     try {
-      const user = res.locals.user;
+      const userId = res.locals.jwtDecoded.id;
+      const user = await prisma.user.findUnique({
+        where: {
+          id: userId
+        }
+      });
+
+      // User email not found
+      if (!user) {
+        return res.status(404).send(USER_NOT_EXISTED);
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...rest } = user;
+
       res.status(200).json({
         success: true,
         data: {
-          user
+          user: rest
         }
       });
     } catch (error) {
