@@ -9,6 +9,7 @@ import {
   refreshTokenSecret
 } from '../../config/jwtConfig';
 import prisma from '../../config/prismaClient';
+import { getErrorMessage } from '../../utils';
 import { EMAIL_EXISTED, INVALID_PASS, NO_TOKEN, USER_NOT_EXISTED } from './constants';
 import { signJwt, verifyJwt } from './utils';
 
@@ -27,10 +28,9 @@ class UserController {
       res.status(200).json({ success: true, data: user });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        res.status(404).json({ success: false, message: EMAIL_EXISTED });
-      } else if (error instanceof Error) {
-        res.status(404).json({ success: false, message: error.message });
+        return res.status(404).json({ success: false, message: EMAIL_EXISTED });
       }
+      res.status(404).send({ success: false, message: getErrorMessage(error) });
     }
   }
   async login(req: Request, res: Response) {
@@ -57,23 +57,31 @@ class UserController {
       const accessToken = signJwt({ id: user.id }, accessTokenSecret, accessTokenExpiration);
       const refreshToken = signJwt({ id: user.id }, refreshTokenSecret, refreshTokenExpiration);
 
+      // Then return cookie to client for more security as well, instead of storing tokens in localStorage
+      res.cookie('accessTokenCookie', accessToken, {
+        maxAge: accessTokenExpiration,
+        httpOnly: true
+      });
+
+      // Only send cookie
+      res.cookie('refreshTokenCookie', refreshToken, {
+        maxAge: refreshTokenExpiration,
+        httpOnly: true
+      });
+
       res.status(200).json({
         success: true,
         data: {
           ...user,
-          role: user.role,
-          accessToken,
-          refreshToken
+          role: user.role
         }
       });
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(404).send({ success: false, message: error.message });
-      }
+      res.status(404).send({ success: false, message: getErrorMessage(error) });
     }
   }
   refreshToken(req: Request, res: Response) {
-    const refreshToken = req.header('Authorization')?.replace('Bearer ', '');
+    const refreshToken = req.cookies.refreshTokenCookie || req.header('Authorization')?.replace('Bearer ', '');
     if (!refreshToken) {
       return res.status(403).send({ success: false, message: NO_TOKEN });
     }
@@ -86,6 +94,24 @@ class UserController {
         res.status(404).send({ success: false, message: error.message });
       }
     }
+  }
+  getCurrentUser(req: Request, res: Response) {
+    try {
+      const user = res.locals.user;
+      res.status(200).json({
+        success: true,
+        data: {
+          user
+        }
+      });
+    } catch (error) {
+      res.status(404).send({ success: false, message: error });
+    }
+  }
+  logout(req: Request, res: Response) {
+    res.clearCookie('accessTokenCookie');
+    res.clearCookie('refreshTokenCookie');
+    res.status(200).send({ message: 'Logout successfully' });
   }
 }
 

@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import initUserRoutes from './features/auth/authRoutes';
@@ -11,6 +12,7 @@ const port = process.env.PORT || '3002';
 app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Routes
 initUserRoutes(app);

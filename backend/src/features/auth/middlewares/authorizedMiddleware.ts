@@ -2,7 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
 import { accessTokenSecret } from '../../../config/jwtConfig';
 import prisma from '../../../config/prismaClient';
-import { NO_TOKEN, REQUIRE_ADMIN_ROLE, USER_NOT_EXISTED } from '../constants';
+import { getErrorMessage } from '../../../utils';
+import { NO_TOKEN, restrictToRole, USER_NOT_EXISTED } from '../constants';
 import { verifyJwt } from '../utils';
 
 export interface CustomRequest extends Request {
@@ -10,7 +11,7 @@ export interface CustomRequest extends Request {
 }
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
-  const accessToken = req.header('Authorization')?.replace('Bearer ', '');
+  const accessToken = req.cookies.accessTokenCookie || req.header('Authorization')?.replace('Bearer ', '');
   if (!accessToken) {
     return res.status(403).send({ success: false, message: NO_TOKEN });
   }
@@ -32,7 +33,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
   }
 };
 
-export const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
+export const restrictTo = (allowedRoles: string[]) => async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.body;
   if (id) {
     return res.json(400).send({ success: false, message: USER_NOT_EXISTED });
@@ -46,16 +47,14 @@ export const isAdmin = async (req: Request, res: Response, next: NextFunction) =
     if (!user) {
       return res.json(400).send({ success: false, message: USER_NOT_EXISTED });
     }
-    if (user.role !== 'ADMIN') {
+    if (!allowedRoles.includes(user.role)) {
       res.status(403).send({
         success: false,
-        message: REQUIRE_ADMIN_ROLE
+        message: restrictToRole[user.role]
       });
     }
     next();
   } catch (error) {
-    if (error instanceof Error) {
-      res.send({ success: false, message: error.message });
-    }
+    res.send({ success: false, message: getErrorMessage(error) });
   }
 };
