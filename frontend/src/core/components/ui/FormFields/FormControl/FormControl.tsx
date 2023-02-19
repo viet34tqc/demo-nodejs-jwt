@@ -7,7 +7,7 @@ const FormControl = ({
 	...props
 }: PropsWithChildren<{ className?: string }>) => {
 	return (
-		<div className={clsx('grid gap-[10px]', className)} {...props}>
+		<div className={clsx('grid gap-3', className)} {...props}>
 			{children}
 		</div>
 	);
