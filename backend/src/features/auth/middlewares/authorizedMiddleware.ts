@@ -12,7 +12,7 @@ import { verifyJwt } from '../utils';
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   const accessToken = req.cookies.accessTokenCookie || req.header('Authorization')?.replace('Bearer ', '');
   if (!accessToken) {
-    return res.status(403).send({ success: false, message: NO_TOKEN });
+    return res.status(403).send(getErrorMessage(NO_TOKEN));
   }
 
   try {
@@ -27,19 +27,14 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
     next();
   } catch (error) {
     // If error like wrong token, expired token...
-    if (error instanceof Error) {
-      return res.status(401).send({
-        success: false,
-        message: error.message
-      });
-    }
+    res.status(401).send(getErrorMessage(error));
   }
 };
 
 export const restrictTo = (allowedRoles: string[]) => async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.body;
   if (id) {
-    return res.json(400).send({ success: false, message: USER_NOT_EXISTED });
+    return res.json(400).send(getErrorMessage(USER_NOT_EXISTED));
   }
   try {
     const user = await prisma.user.findUnique({
@@ -48,7 +43,7 @@ export const restrictTo = (allowedRoles: string[]) => async (req: Request, res: 
       }
     });
     if (!user) {
-      return res.json(400).send({ success: false, message: USER_NOT_EXISTED });
+      return res.json(400).send(getErrorMessage(USER_NOT_EXISTED));
     }
     if (!allowedRoles.includes(user.role)) {
       res.status(403).send({
@@ -58,6 +53,6 @@ export const restrictTo = (allowedRoles: string[]) => async (req: Request, res: 
     }
     next();
   } catch (error) {
-    res.status(401).send({ success: false, message: getErrorMessage(error) });
+    return res.json(404).send(getErrorMessage(error));
   }
 };

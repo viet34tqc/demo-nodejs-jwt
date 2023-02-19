@@ -28,9 +28,9 @@ class UserController {
       res.status(200).json({ success: true, data: user });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        return res.status(404).json({ success: false, message: EMAIL_EXISTED });
+        return res.status(404).send(getErrorMessage(EMAIL_EXISTED));
       }
-      res.status(404).send({ success: false, message: getErrorMessage(error) });
+      res.status(404).send(getErrorMessage(error));
     }
   }
   async login(req: Request, res: Response) {
@@ -44,12 +44,12 @@ class UserController {
 
       // User email not found
       if (!user) {
-        return res.status(404).send(USER_NOT_EXISTED);
+        return res.status(404).send(getErrorMessage(USER_NOT_EXISTED));
       }
 
       const isPasswordValidated = compareSync(req.body.password, user.password as string);
       if (!isPasswordValidated) {
-        return res.status(401).send({ success: false, message: INVALID_PASS });
+        return res.status(401).send(getErrorMessage(INVALID_PASS));
       }
 
       // Generate JWT tokens
@@ -85,22 +85,20 @@ class UserController {
         }
       });
     } catch (error) {
-      res.status(404).send({ success: false, message: getErrorMessage(error) });
+      res.status(404).send(getErrorMessage(error));
     }
   }
   refreshToken(req: Request, res: Response) {
     const refreshToken = req.cookies.refreshTokenCookie || req.header('Authorization')?.replace('Bearer ', '');
     if (!refreshToken) {
-      return res.status(403).send({ success: false, message: NO_TOKEN });
+      return res.status(403).send(getErrorMessage(NO_TOKEN));
     }
     try {
       const decoded = verifyJwt(refreshToken, accessTokenSecret) as JwtPayload;
       const accessToken = signJwt({ id: decoded.id }, accessTokenSecret, accessTokenExpiration);
       return res.status(200).json({ accessToken });
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(404).send({ success: false, message: error.message });
-      }
+      return res.status(404).send(getErrorMessage(NO_TOKEN));
     }
   }
   async getCurrentUser(req: Request, res: Response) {
@@ -114,7 +112,7 @@ class UserController {
 
       // User email not found
       if (!user) {
-        return res.status(404).send(USER_NOT_EXISTED);
+        return res.status(404).send(getErrorMessage(USER_NOT_EXISTED));
       }
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -127,7 +125,7 @@ class UserController {
         }
       });
     } catch (error) {
-      res.status(404).send({ success: false, message: error });
+      return res.status(404).send(getErrorMessage(USER_NOT_EXISTED));
     }
   }
   logout(req: Request, res: Response) {
