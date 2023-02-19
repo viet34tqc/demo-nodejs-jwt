@@ -63,6 +63,11 @@ class UserController {
         httpOnly: true
       });
 
+      // We need to send loggedIn cookie because accessToken is httpOnly.
+      res.cookie('loggedInCookie', true, {
+        maxAge: accessTokenExpiration
+      });
+
       // Only send cookie
       res.cookie('refreshTokenCookie', refreshToken, {
         maxAge: refreshTokenExpiration,
@@ -127,6 +132,7 @@ class UserController {
   }
   logout(req: Request, res: Response) {
     res.clearCookie('accessTokenCookie');
+    res.clearCookie('loggedInCookie');
     res.clearCookie('refreshTokenCookie');
     res.status(200).send({ message: 'Logout successfully' });
   }
