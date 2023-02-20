@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
-import { BrowserRouter } from 'react-router-dom';
+import { RouterProvider } from 'react-router-dom';
 import AuthContextProvider from './core/context/AuthContext';
-import { Login } from './views/AuthPages/Login';
+import { router } from './core/routes';
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -14,16 +14,14 @@ const queryClient = new QueryClient({
 
 function App() {
 	return (
-		<div className="App">
+		<>
 			<QueryClientProvider client={queryClient}>
 				<AuthContextProvider>
-					<BrowserRouter>
-						<Login />
-					</BrowserRouter>
+					<RouterProvider router={router} />
 				</AuthContextProvider>
 			</QueryClientProvider>
 			<Toaster position="top-right" />
-		</div>
+		</>
 	);
 }
 
