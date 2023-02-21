@@ -1,6 +1,6 @@
 import axiosInstance from '@/api/axiosInstance'
-import { AuthUser, LoginCredentialsDTO, RegisterCredentialsDTO } from '@/types/auth'
 import { loginUser, logoutUser, registerUser } from '@/views/AuthPages/apis'
+import { AuthUser, LoginCredentialsDTO, RegisterCredentialsDTO } from '@/views/AuthPages/types/auth'
 
 import {
   QueryObserverResult,

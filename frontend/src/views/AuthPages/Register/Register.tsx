@@ -4,6 +4,7 @@ import { FormControl } from '@/core/components/ui/FormFields/FormControl'
 import { Input } from '@/core/components/ui/FormFields/Input'
 import { Label } from '@/core/components/ui/FormFields/Label'
 import { Select } from '@/core/components/ui/FormFields/Select'
+import { Spinner } from '@/core/components/ui/Spinner'
 import { useAuth } from '@/core/context/AuthContext'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AxiosError } from 'axios'
@@ -12,12 +13,7 @@ import toast from 'react-hot-toast'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import { AuthLayout } from '../AuthLayout'
-
-export interface RegisterValues {
-  email: string
-  password: string
-  role: 'ADMIN' | 'SUBSCRIBER'
-}
+import { RegisterCredentialsDTO } from '../types/auth'
 
 const schema = z.object({
   email: z.string().email(),
@@ -27,20 +23,20 @@ const schema = z.object({
 
 const Register = () => {
   const navigate = useNavigate()
-  const { loginMutation, isLoggingIn } = useAuth()
+  const { registerMutation, isRegistering } = useAuth()
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterValues>({
+  } = useForm<RegisterCredentialsDTO>({
     resolver: zodResolver(schema),
     defaultValues: {
       role: 'ADMIN',
     },
   })
 
-  const onSubmit = async (data: RegisterValues) => {
-    loginMutation.mutate(data, {
+  const onSubmit = async (data: RegisterCredentialsDTO) => {
+    registerMutation.mutate(data, {
       onSuccess: () => {
         navigate('/dashboard')
       },
@@ -77,8 +73,9 @@ const Register = () => {
           <FieldError message={errors.password?.message} />
         </FormControl>
 
-        <Button type='submit' className='w-full' disabled={isLoggingIn}>
-          {isLoggingIn ? 'Loading' : 'Register'}
+        <Button type='submit' className='w-full' disabled={isRegistering}>
+          Login
+          {isRegistering && <Spinner size='sm' className='text-current' />}
         </Button>
       </form>
 

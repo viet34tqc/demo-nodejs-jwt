@@ -13,6 +13,7 @@ export type RegisterCredentialsDTO = {
   email: string
   password: string
   name: string
+  role: 'ADMIN' | 'USER'
 }
 
 export type LoginCredentialsDTO = {

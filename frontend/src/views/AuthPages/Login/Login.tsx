@@ -3,6 +3,7 @@ import { FieldError } from '@/core/components/ui/FormFields/FieldError'
 import { FormControl } from '@/core/components/ui/FormFields/FormControl'
 import { Input } from '@/core/components/ui/FormFields/Input'
 import { Label } from '@/core/components/ui/FormFields/Label'
+import { Spinner } from '@/core/components/ui/Spinner'
 import { useAuth } from '@/core/context/AuthContext'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AxiosError } from 'axios'
@@ -11,11 +12,7 @@ import toast from 'react-hot-toast'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import { AuthLayout } from '../AuthLayout'
-
-export interface LoginValues {
-  email: string
-  password: string
-}
+import { LoginCredentialsDTO } from '../types/auth'
 
 const schema = z.object({
   email: z.string().email(),
@@ -29,11 +26,11 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginValues>({
+  } = useForm<LoginCredentialsDTO>({
     resolver: zodResolver(schema),
   })
 
-  const onSubmit = async (data: LoginValues) => {
+  const onSubmit = async (data: LoginCredentialsDTO) => {
     loginMutation.mutate(data, {
       onSuccess: () => {
         navigate('/dashboard')
@@ -61,7 +58,8 @@ const Login = () => {
         </FormControl>
 
         <Button type='submit' className='w-full' disabled={isLoggingIn}>
-          {isLoggingIn ? 'Loading' : 'Login'}
+          Login
+          {isLoggingIn && <Spinner size='sm' className='text-current' />}
         </Button>
       </form>
 

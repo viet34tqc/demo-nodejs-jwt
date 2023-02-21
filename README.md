@@ -14,8 +14,26 @@
   - rimraf: rm -rf for nodejs
   - eslint, prettier packages: see backend/package.json
   - husky: enforce coding convention
-  
+
 ### Frontend
 
 - React
 - TailwindCSS
+
+## Routes
+
+- Protected route
+
+  - GET: '/api/v1/posts'
+  - GET: '/api/v1/posts/:id'
+  - GET: '/api/v1/comments/:postId'
+  - GET: '/api/v1/profile/'
+  - POST: '/api/v1/comment'
+  - POST: '/api/v1/posts'
+  - PUT: '/api/v1/profile/'
+  - PUT: '/api/v1/posts/:id'
+
+- Protected page
+  - posts
+  - posts/:id
+  - profile
