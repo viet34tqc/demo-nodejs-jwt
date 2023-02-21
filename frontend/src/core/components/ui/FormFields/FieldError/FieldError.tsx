@@ -1,9 +1,9 @@
 interface FieldErrorProps {
-	message?: string;
+  message?: string
 }
 
 export default function FieldError({ message }: FieldErrorProps) {
-	if (!message) return null;
+  if (!message) return null
 
-	return <div className="text-sm text-red-500 font-bold">{message}</div>;
+  return <div className='text-sm text-red-500 font-bold'>{message}</div>
 }

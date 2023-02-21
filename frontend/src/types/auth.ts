@@ -1,21 +1,21 @@
 export type AuthUser = {
-	id: string;
-	email: string;
-	name: string;
-	role: 'ADMIN' | 'USER';
-};
+  id: string
+  email: string
+  name: string
+  role: 'ADMIN' | 'USER'
+}
 
 export type UserResponse = {
-	user: AuthUser;
-};
+  user: AuthUser
+}
 
 export type RegisterCredentialsDTO = {
-	email: string;
-	password: string;
-	name: string;
-};
+  email: string
+  password: string
+  name: string
+}
 
 export type LoginCredentialsDTO = {
-	email: string;
-	password: string;
-};
+  email: string
+  password: string
+}

@@ -1,2 +1,2 @@
-import { default as Register } from './Register';
-export default Register;
+import { default as Register } from './Register'
+export default Register

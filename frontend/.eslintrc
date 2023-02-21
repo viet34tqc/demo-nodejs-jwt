@@ -1,0 +1,32 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  // Specified react version.
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": ["react-hooks", "@typescript-eslint"], // No longer need to specify react here because "plugin:react/recommended defines it already
+  "rules": {
+    "react/react-in-jsx-scope": "off", // No longer need to import React from 'react'
+    "@typescript-eslint/no-explicit-any": "off", // Temporarily disabled variable that has any type
+    "react-hooks/exhaustive-deps": "warn" // This rule is disabled by default
+  }
+}
