@@ -6,7 +6,8 @@ export type AuthUser = {
 }
 
 export type UserResponse = {
-  user: AuthUser
+  status: boolean
+  data: AuthUser
 }
 
 export type RegisterCredentialsDTO = {

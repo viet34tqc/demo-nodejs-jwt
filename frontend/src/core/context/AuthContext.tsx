@@ -76,12 +76,12 @@ const AuthContextProvider = ({ children }: AuthProviderProps) => {
 
   async function loginFn(data: LoginCredentialsDTO) {
     const response = await loginUser(data)
-    return response.user
+    return response.data
   }
 
   async function registerFn(data: RegisterCredentialsDTO) {
     const response = await registerUser(data)
-    return response.user
+    return response.data
   }
 
   async function logoutFn() {

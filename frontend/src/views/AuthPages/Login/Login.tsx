@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
-import { AuthLayout } from '../AuthLayout'
+import { AuthLayout } from '../../../core/layouts/AuthLayout'
 import { LoginCredentialsDTO } from '../types/auth'
 
 const schema = z.object({
@@ -33,7 +33,7 @@ const Login = () => {
   const onSubmit = async (data: LoginCredentialsDTO) => {
     loginMutation.mutate(data, {
       onSuccess: () => {
-        navigate('/dashboard')
+        navigate('/posts')
       },
       onError: (error) => {
         if (error instanceof AxiosError) {

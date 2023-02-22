@@ -22,7 +22,7 @@
 
 ## Routes
 
-- Protected route
+- Protected endpoint
 
   - GET: '/api/v1/posts'
   - GET: '/api/v1/posts/:id'
@@ -33,7 +33,7 @@
   - PUT: '/api/v1/profile/'
   - PUT: '/api/v1/posts/:id'
 
-- Protected page
+- Protected route
   - posts
   - posts/:id
   - profile

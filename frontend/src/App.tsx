@@ -13,6 +13,9 @@ const queryClient = new QueryClient({
 })
 
 function App() {
+  // Here you can filter routes based on user's role
+  // In case of that, you need to move QueryClientProvider and AuthContextProvider to main.tsx
+
   return (
     <>
       <QueryClientProvider client={queryClient}>

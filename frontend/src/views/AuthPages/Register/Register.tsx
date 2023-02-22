@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
-import { AuthLayout } from '../AuthLayout'
+import { AuthLayout } from '../../../core/layouts/AuthLayout'
 import { RegisterCredentialsDTO } from '../types/auth'
 
 const schema = z.object({
