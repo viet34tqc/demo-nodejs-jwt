@@ -16,3 +16,7 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
+
+.c-container {
+  @apply container mx-auto px-4;
+}

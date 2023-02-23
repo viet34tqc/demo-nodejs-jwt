@@ -1,6 +1,6 @@
 import loadable from '@loadable/component'
 const ProtectedRoute = loadable(() => import('./components/ProtectedRoute'))
-const Posts = loadable(() => import('@/views/Posts/Posts'))
+const Posts = loadable(() => import('@/views/Posts'))
 
 export const protectedRoutes = [
   {
