@@ -2,18 +2,15 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
 import express from 'express';
+import { baseConfig } from './config/baseConfig';
 import initUserRoutes from './features/auth/authRoutes';
 import initPostRoutes from './features/post/postRoutes';
 dotenv.config();
 const app = express();
-const port = process.env.PORT || '3002';
 
 // Setup CORS
-app.use(
-  cors({
-    origin: '*'
-  })
-);
+// Origin mustn't be set by * if you are using cookie
+app.use(cors({ credentials: true, origin: baseConfig.origin }));
 
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -25,6 +22,6 @@ app.use(cookieParser());
 initUserRoutes(app);
 initPostRoutes(app);
 
-app.listen(port, () => {
-  console.log(`Server running at port ${port}`);
+app.listen(baseConfig.port, () => {
+  console.log(`Server running at port ${baseConfig.port}`);
 });

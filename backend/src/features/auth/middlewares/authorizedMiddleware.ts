@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { accessTokenSecret } from '../../../config/jwtConfig';
+import { baseConfig } from '../../../config/baseConfig';
 import prisma from '../../../config/prismaClient';
 import { getErrorMessage } from '../../../utils';
 import { NO_TOKEN, restrictToRole, USER_NOT_EXISTED } from '../constants';
@@ -18,7 +18,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
   try {
     // Save the decoded payload for the next request after successful login
     // The decoded payload should be like this { id: 6, iat: 1676349774, exp: 1676436174 }
-    const decoded = verifyJwt(accessToken, accessTokenSecret);
+    const decoded = verifyJwt(accessToken, baseConfig.accessTokenSecret);
 
     // This is really important (Helps us know if the user is logged in from other controllers)
     // You can do: (req.user or res.locals.user)

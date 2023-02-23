@@ -2,12 +2,8 @@ import { Prisma } from '@prisma/client';
 import { compareSync, hashSync } from 'bcrypt';
 import { Request, Response } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
-import {
-  accessTokenExpiration,
-  accessTokenSecret,
-  refreshTokenExpiration,
-  refreshTokenSecret
-} from '../../config/jwtConfig';
+import { baseConfig } from '../../config/baseConfig';
+
 import prisma from '../../config/prismaClient';
 import { getErrorMessage } from '../../utils';
 import { EMAIL_EXISTED, INVALID_PASS, NO_TOKEN, USER_NOT_EXISTED } from './constants';
@@ -54,23 +50,23 @@ class UserController {
 
       // Generate JWT tokens
       // We are only including user id in the payload for security
-      const accessToken = signJwt({ id: user.id }, accessTokenSecret, accessTokenExpiration);
-      const refreshToken = signJwt({ id: user.id }, refreshTokenSecret, refreshTokenExpiration);
+      const accessToken = signJwt({ id: user.id }, baseConfig.accessTokenSecret, baseConfig.accessTokenExpiration);
+      const refreshToken = signJwt({ id: user.id }, baseConfig.refreshTokenSecret, baseConfig.refreshTokenExpiration);
 
       // Then return cookie to client for more security as well, instead of storing tokens in localStorage
       res.cookie('accessTokenCookie', accessToken, {
-        maxAge: accessTokenExpiration,
+        maxAge: baseConfig.accessTokenExpiration,
         httpOnly: true
       });
 
       // We need to send loggedIn cookie because accessToken is httpOnly.
       res.cookie('loggedInCookie', true, {
-        maxAge: accessTokenExpiration
+        maxAge: baseConfig.accessTokenExpiration
       });
 
       // Only send cookie
       res.cookie('refreshTokenCookie', refreshToken, {
-        maxAge: refreshTokenExpiration,
+        maxAge: baseConfig.refreshTokenExpiration,
         httpOnly: true
       });
 
@@ -94,8 +90,8 @@ class UserController {
       return res.status(403).send(getErrorMessage(NO_TOKEN));
     }
     try {
-      const decoded = verifyJwt(refreshToken, accessTokenSecret) as JwtPayload;
-      const accessToken = signJwt({ id: decoded.id }, accessTokenSecret, accessTokenExpiration);
+      const decoded = verifyJwt(refreshToken, baseConfig.accessTokenSecret) as JwtPayload;
+      const accessToken = signJwt({ id: decoded.id }, baseConfig.accessTokenSecret, baseConfig.accessTokenExpiration);
       return res.status(200).json({ accessToken });
     } catch (error) {
       return res.status(404).send(getErrorMessage(NO_TOKEN));

@@ -3,6 +3,7 @@ import axios, { InternalAxiosRequestConfig } from 'axios'
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   timeout: 30000,
+  withCredentials: true, // set to true, otherwise client doesn't send cookie along
   headers: {
     'Content-Type': 'application/json; charset=utf-8',
   },

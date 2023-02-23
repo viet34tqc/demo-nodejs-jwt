@@ -1,5 +1,5 @@
 import { sign, SignOptions, verify } from 'jsonwebtoken';
-import { accessTokenSecret } from '../../config/jwtConfig';
+import { baseConfig } from '../../config/baseConfig';
 
 export const signJwt = (
   payload: string | object | Buffer,
@@ -7,7 +7,7 @@ export const signJwt = (
   expiresIn: string | number,
   options?: SignOptions
 ) => {
-  return sign(payload, accessTokenSecret, {
+  return sign(payload, baseConfig.accessTokenSecret, {
     ...(options && options),
     expiresIn
   });
