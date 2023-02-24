@@ -2,11 +2,13 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
 import express from 'express';
-import { baseConfig } from './config/baseConfig';
 import initUserRoutes from './features/auth/authRoutes';
 import initPostRoutes from './features/post/postRoutes';
 dotenv.config();
 const app = express();
+
+// Import baseConfig after running dotenv
+import { baseConfig } from './config/baseConfig';
 
 // Setup CORS
 // Origin mustn't be set by * if you are using cookie

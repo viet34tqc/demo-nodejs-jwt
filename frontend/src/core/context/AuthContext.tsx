@@ -1,6 +1,6 @@
 import axiosInstance from '@/api/axiosInstance'
 import { loginUser, logoutUser, registerUser } from '@/views/AuthPages/apis'
-import { AuthUser, LoginCredentialsDTO, RegisterCredentialsDTO } from '@/views/AuthPages/types/auth'
+import { AuthUser, LoginCredentialsDTO, RegisterCredentialsDTO, UserResponse } from '@/views/AuthPages/types/auth'
 
 import {
   QueryObserverResult,
@@ -15,7 +15,7 @@ import { useCookies } from 'react-cookie'
 
 import { Spinner } from '../components/ui/Spinner'
 
-export const getCurrentUser = (): Promise<AuthUser> => {
+export const getCurrentUser = (): Promise<UserResponse> => {
   return axiosInstance.get('/auth/me')
 }
 
@@ -63,8 +63,8 @@ const AuthContextProvider = ({ children }: AuthProviderProps) => {
 
   async function loadUser() {
     if (cookies.loggedInCookie) {
-      const data = await getCurrentUser()
-      return data
+      const response = await getCurrentUser()
+      return response.data
     }
     return null
   }

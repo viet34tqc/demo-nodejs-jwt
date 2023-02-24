@@ -1,16 +1,12 @@
 import { useAuth } from '@/core/context/AuthContext'
-import { useEffect } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom'
 
 const AuthRoute = () => {
-  const navigate = useNavigate()
   const { user } = useAuth()
 
-  useEffect(() => {
-    if (user) {
-      navigate('/posts')
-    }
-  }, [user, navigate])
+  if (user) {
+    return <Navigate to='/posts' replace />
+  }
   return <Outlet />
 }
 
