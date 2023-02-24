@@ -5,7 +5,7 @@ import { Link, LinkProps } from 'react-router-dom'
 // Here is tailwind class for variants
 const variants = {
   primary: 'bg-blue-600 text-white hover:bg-gray-50:text-blue-600',
-  secondary: 'bg-white text-blue-600 hover:bg-blue-600:text-white',
+  secondary: 'bg-gray-200 text-black-300 hover:bg-blue-600:text-white',
 }
 
 type BaseProps = {
