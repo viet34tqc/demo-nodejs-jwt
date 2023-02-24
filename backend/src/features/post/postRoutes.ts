@@ -8,6 +8,7 @@ const initPostRoutes = (app: Application) => {
   const postController = new PostController();
   router.use(verifyToken);
   router.get('/posts', postController.getPosts);
+  router.post('/posts', postController.addPost);
   return app.use('/api/v1', router);
 };
 

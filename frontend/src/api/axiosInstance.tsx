@@ -13,9 +13,15 @@ axiosInstance.interceptors.response.use(
   (response) => {
     return response.data
   },
-  (responseError) => {
-    // TODO: should redirect to login if status is 401
-    return Promise.reject(responseError)
+  async (error) => {
+    const originalRequest = error.config
+    if (error.response.status === 403 && !originalRequest._retry) {
+      // We only retry one time, in case the originalRequest fail again that leads to infinite loop
+      originalRequest._retry = true
+      await axiosInstance.post('/auth/refreshToken')
+      return axiosInstance(originalRequest)
+    }
+    return Promise.reject(error)
   },
 )
 

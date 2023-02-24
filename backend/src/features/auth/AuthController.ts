@@ -92,6 +92,10 @@ class UserController {
     try {
       const decoded = verifyJwt(refreshToken, baseConfig.accessTokenSecret) as JwtPayload;
       const accessToken = signJwt({ id: decoded.id }, baseConfig.accessTokenSecret, baseConfig.accessTokenExpiration);
+      res.cookie('accessTokenCookie', accessToken, {
+        maxAge: baseConfig.accessTokenExpiration * 1000,
+        httpOnly: true
+      });
       return res.status(200).json({ accessToken });
     } catch (error) {
       return res.status(404).send(getErrorMessage(NO_TOKEN));

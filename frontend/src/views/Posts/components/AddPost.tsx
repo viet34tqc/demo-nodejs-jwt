@@ -1,3 +1,4 @@
+import axiosInstance from '@/api/axiosInstance'
 import { Button } from '@/core/components/ui/Button'
 import { FieldError } from '@/core/components/ui/FormFields/FieldError'
 import { FormControl } from '@/core/components/ui/FormFields/FormControl'
@@ -23,6 +24,7 @@ const AddPost = () => {
 
   const onSubmit = async (data: PostFormData) => {
     console.log('data', data)
+    await axiosInstance.post('posts', { data })
     setIsOpen(false)
   }
 
