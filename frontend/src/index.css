@@ -17,6 +17,10 @@
   -webkit-text-size-adjust: 100%;
 }
 
+.ql-editor {
+  min-height: 200px;
+}
+
 .c-container {
   @apply container mx-auto px-4;
 }
