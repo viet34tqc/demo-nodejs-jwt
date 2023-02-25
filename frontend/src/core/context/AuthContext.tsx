@@ -47,7 +47,8 @@ const queryKey = ['auth-user']
 
 const AuthContextProvider = ({ children }: AuthProviderProps) => {
   const queryClient = useQueryClient() // returns the current QueryClient instance created in AppProvider.
-  const [cookies] = useCookies(['loggedInCookie'])
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [cookies, setCookie, removeCookie] = useCookies(['loggedInCookie'])
   // This is much like setUser using setState,
   // but instead of saving the user in the state, we are saving it using useQuery with a key
   // This query runs every time the app is mounted to get the user data when we reload the page after login
@@ -91,6 +92,8 @@ const AuthContextProvider = ({ children }: AuthProviderProps) => {
 
   async function logoutFn() {
     const response = await logoutUser()
+    // We also need to remove cookie on client, otherwise client will call /me API without refreshToken => create infinite loop
+    removeCookie('loggedInCookie')
     return response.message
   }
 
