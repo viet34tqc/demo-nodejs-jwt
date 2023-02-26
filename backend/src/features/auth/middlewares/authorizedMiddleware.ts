@@ -21,7 +21,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
     const decoded = verifyJwt(accessToken, baseConfig.accessTokenSecret);
 
     // This is really important (Helps us know if the user is logged in from other controllers)
-    // You can do: (req.user or res.locals.user)
+    // You can do: (req.jwtDecoded or res.locals.jwtDecoded)
     res.locals.jwtDecoded = decoded;
     //(req as CustomRequest).jwtDecoded = decoded as string | JwtPayload;
     next();

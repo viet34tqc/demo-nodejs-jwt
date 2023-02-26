@@ -16,7 +16,7 @@ model Post {
   createdAt DateTime  @default(now()) @db.Timestamp(6)
   content   String?
   authorId  Int
-  likes     Int
+  likes     Int?      @default(0)
   author    User      @relation(fields: [authorId], references: [id])
   comments  Comment[]
 }
