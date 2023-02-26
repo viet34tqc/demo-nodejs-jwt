@@ -21,9 +21,11 @@ const Posts = () => {
 
   return (
     <ProtectedLayout>
-      {posts.data.map(({ id, title, content }: Post) => (
-        <PostItem title={title} content={content} key={id} />
-      ))}
+      <div className='space-y-6'>
+        {posts.data.map(({ id, title, content }: Post) => (
+          <PostItem title={title} content={content} key={id} />
+        ))}
+      </div>
     </ProtectedLayout>
   )
 }

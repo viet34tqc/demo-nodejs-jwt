@@ -21,6 +21,10 @@
   min-height: 200px;
 }
 
+p:last-child {
+  margin-bottom: 0;
+}
+
 .c-container {
   @apply container mx-auto px-4;
 }
