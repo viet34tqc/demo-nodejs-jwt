@@ -81,4 +81,26 @@ export class PostController {
       res.status(404).send(getErrorMessage(error));
     }
   }
+
+  async getPost(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const post = await prisma.post.findUnique({
+        where: {
+          id: +id
+        }
+      });
+
+      if (!post) {
+        res.status(404).send(getErrorMessage(NO_POST));
+      }
+
+      res.status(200).json({
+        success: true,
+        data: post
+      });
+    } catch (error) {
+      res.status(404).send(getErrorMessage(error));
+    }
+  }
 }
