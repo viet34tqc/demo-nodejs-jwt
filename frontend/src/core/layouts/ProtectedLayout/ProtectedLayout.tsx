@@ -15,7 +15,7 @@ const ProtectedLayout = ({ children }: PropsWithChildren) => {
         </div>
       </header>
       <div className='bg-gray-50 py-12 sm:px-6 lg:px-8'>
-        <div className='w-[800px] max-w-full mx-auto px-4'>{children}</div>
+        <div className='max-w-[85ch] mx-auto px-4'>{children}</div>
       </div>
     </div>
   )

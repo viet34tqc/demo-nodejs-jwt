@@ -73,7 +73,7 @@ const Register = () => {
           <FieldError message={errors.password?.message} />
         </FormControl>
 
-        <Button type='submit' className='w-full' disabled={isRegistering}>
+        <Button type='submit' className='w-full gap-2' disabled={isRegistering}>
           Login
           {isRegistering && <Spinner size='sm' className='text-current' />}
         </Button>

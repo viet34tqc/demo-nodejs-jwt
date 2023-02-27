@@ -57,7 +57,7 @@ const Login = () => {
           <FieldError message={errors.password?.message} />
         </FormControl>
 
-        <Button type='submit' className='w-full' disabled={isLoggingIn}>
+        <Button type='submit' className='w-full gap-2' disabled={isLoggingIn}>
           Login
           {isLoggingIn && <Spinner size='sm' className='text-current' />}
         </Button>

@@ -49,8 +49,7 @@ const Button = ({ variant = 'primary', ...props }: ButtonProps) => {
     newProps['type'] = newProps.type ? newProps.type : 'button'
   }
 
-  const content = <As {...newProps} />
-  return content
+  return <As {...newProps} />
 }
 
 export default Button

@@ -23,6 +23,9 @@ export class PostController {
         where: {
           authorId: userId
         },
+        orderBy: {
+          createdAt: 'desc'
+        },
         include: {
           author: true
         }
@@ -34,6 +37,7 @@ export class PostController {
         id: post.id,
         title: post.title,
         content: post.content,
+        createdAt: post.createdAt,
         authorName: post.author.name
       }));
       res.status(200).send({
