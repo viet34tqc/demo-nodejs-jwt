@@ -21,7 +21,9 @@ const CommentItem = ({ id, authorName, createdAt, content, authorId }: CommentDT
         </div>
         <div dangerouslySetInnerHTML={{ __html: content }} />
       </div>
-      <AuthorizationUI policyCheck={authorizedPolicies['comment:delete'](user as AuthUser, authorId)}>
+      <AuthorizationUI
+        policyCheck={authorizedPolicies['comment:delete'](user as AuthUser, authorId)}
+      >
         <DeleteComment id={id} />
       </AuthorizationUI>
     </div>

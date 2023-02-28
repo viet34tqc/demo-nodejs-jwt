@@ -9,7 +9,9 @@ const ProtectedLayout = ({ children }: PropsWithChildren) => {
     <div className='min-h-screen grid grid-rows-[auto,1fr]'>
       <header className='bg-slate-100 shadow-sm'>
         <div className='c-container flex justify-between items-center'>
-          <strong>Logo</strong>
+          <Link to='/'>
+            <strong>Logo</strong>
+          </Link>
           <div className='flex items-center justify-end gap-4'>
             <Link to='/posts' className='hover:text-gray-400 transition-all'>
               Posts
