@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
-import { LoginCredentialsDTO } from '../types/auth'
+import { LoginCredentialsDTO } from '../types'
 
 const schema = z.object({
   email: z.string().email(),

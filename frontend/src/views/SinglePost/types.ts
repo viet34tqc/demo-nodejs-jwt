@@ -4,7 +4,7 @@ export type AddCommentDTO = {
 }
 
 export type CommentDTO = {
-  id: string,
+  id: string
   content: string
   createdAt: string
   authorName: string

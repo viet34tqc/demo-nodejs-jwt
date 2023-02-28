@@ -31,7 +31,8 @@ const CommentList = () => {
     )
   }
 
-  if (!comments || comments?.data.length === 0) return null
+  if (!comments || comments?.data.length === 0)
+    return <div className='mt-8'>There is no comment</div>
   return (
     <div className='mt-8'>
       {comments.data.map(({ id, ...props }: CommentDTO) => (

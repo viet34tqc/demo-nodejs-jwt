@@ -13,7 +13,7 @@ import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
-import { RegisterCredentialsDTO } from '../types/auth'
+import { RegisterCredentialsDTO } from '../types'
 
 const schema = z.object({
   email: z.string().email(),
@@ -70,7 +70,7 @@ const Register = () => {
               { value: 'SUBSCRIBER', label: 'Subscriber' },
             ]}
           />
-          <FieldError message={errors.password?.message} />
+          <FieldError message={errors.role?.message} />
         </FormControl>
 
         <Button type='submit' className='w-full gap-2' disabled={isRegistering}>

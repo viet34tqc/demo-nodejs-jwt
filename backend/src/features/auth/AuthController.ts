@@ -123,12 +123,40 @@ class UserController {
 
       res.status(200).json({
         success: true,
-        data: {
-          user: rest
-        }
+        data: rest
       });
     } catch (error) {
-      return res.status(404).send(getErrorMessage(USER_NOT_EXISTED));
+      return res.status(404).send(getErrorMessage(error));
+    }
+  }
+  async updateProfile(req: Request, res: Response) {
+    try {
+      const userId = res.locals.jwtDecoded.id;
+      const { name, role } = req.body;
+      const user = await prisma.user.update({
+        where: {
+          id: userId
+        },
+        data: {
+          name,
+          role
+        }
+      });
+
+      // User email not found
+      if (!user) {
+        return res.status(404).send(getErrorMessage(USER_NOT_EXISTED));
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...rest } = user;
+
+      res.status(200).json({
+        success: true,
+        data: rest
+      });
+    } catch (error) {
+      return res.status(404).send(getErrorMessage(error));
     }
   }
   logout(req: Request, res: Response) {

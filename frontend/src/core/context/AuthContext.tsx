@@ -5,7 +5,7 @@ import {
   LoginCredentialsDTO,
   RegisterCredentialsDTO,
   UserResponse,
-} from '@/views/AuthPages/types/auth'
+} from '@/views/AuthPages/types'
 
 import {
   QueryObserverResult,
@@ -43,7 +43,7 @@ export interface AuthProviderProps {
 }
 
 export const AuthContext = createContext<AuthContextValues | null>(null)
-const queryKey = ['auth-user']
+export const authKey = ['auth-user']
 
 const AuthContextProvider = ({ children }: AuthProviderProps) => {
   const queryClient = useQueryClient() // returns the current QueryClient instance created in AppProvider.
@@ -62,7 +62,7 @@ const AuthContextProvider = ({ children }: AuthProviderProps) => {
     isSuccess,
     refetch,
   } = useQuery({
-    queryKey,
+    queryKey: authKey,
     queryFn: loadUser,
     staleTime: Infinity,
   })
@@ -76,7 +76,7 @@ const AuthContextProvider = ({ children }: AuthProviderProps) => {
   }
 
   const setUser = React.useCallback(
-    (data: AuthUser) => queryClient.setQueryData(queryKey, data),
+    (data: AuthUser) => queryClient.setQueryData(authKey, data),
     [queryClient],
   )
 
