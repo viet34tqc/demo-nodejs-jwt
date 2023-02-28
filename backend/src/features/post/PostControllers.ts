@@ -31,7 +31,7 @@ export class PostController {
         }
       });
       if (!posts.length) {
-        return res.status(200).send(getErrorMessage(NO_POST));
+        return res.status(200).send({ success: true, data: [] });
       }
       const data = posts.map((post: Post & { author: User }) => ({
         id: post.id,

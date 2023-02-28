@@ -46,7 +46,6 @@ const AddPost = () => {
   }, [isOpen, reset])
 
   const onSubmit = async (data: AddPostDTO) => {
-    console.log('data', data)
     addPostMutation.mutate(data, {
       onSuccess: () => {
         setIsOpen(false)

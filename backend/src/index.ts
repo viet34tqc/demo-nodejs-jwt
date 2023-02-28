@@ -9,6 +9,7 @@ const app = express();
 
 // Import baseConfig after running dotenv
 import { baseConfig } from './config/baseConfig';
+import initCommentRoutes from './features/comment/commentRoutes';
 
 // Setup CORS
 // Origin mustn't be set by * if you are using cookie
@@ -23,6 +24,7 @@ app.use(cookieParser());
 // Routes
 initUserRoutes(app);
 initPostRoutes(app);
+initCommentRoutes(app);
 
 app.listen(baseConfig.port, () => {
   console.log(`Server running at port ${baseConfig.port}`);
