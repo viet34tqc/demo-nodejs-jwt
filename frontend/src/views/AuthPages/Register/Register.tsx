@@ -38,7 +38,7 @@ const Register = () => {
   const onSubmit = async (data: RegisterCredentialsDTO) => {
     registerMutation.mutate(data, {
       onSuccess: () => {
-        navigate('/dashboard')
+        navigate('/posts')
       },
       onError: (error) => {
         if (error instanceof AxiosError) {

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '../../config/prismaClient';
 import { getErrorMessage } from '../../utils';
-import { NO_POST_ID_CONTENT } from './constants';
+import { DELETE_COMMENT_SUCCESSFULLY, NO_COMMENT_ID, NO_POST_ID_CONTENT } from './constants';
 
 export class CommentColtroller {
   async getComments(req: Request, res: Response) {
@@ -27,7 +27,8 @@ export class CommentColtroller {
         id: comment.id,
         content: comment.content,
         createdAt: comment.createdAt,
-        authorName: comment.author.name
+        authorName: comment.author.name,
+        authorId: comment.author.id
       }));
 
       return res.status(200).send({ success: true, data });
@@ -52,6 +53,26 @@ export class CommentColtroller {
       res.status(200).json({
         success: true,
         data: comment
+      });
+    } catch (error) {
+      res.status(404).send(getErrorMessage(error));
+    }
+  }
+
+  async deleteComment(req: Request, res: Response) {
+    try {
+      const { commentId } = req.params;
+      if (!commentId) {
+        return res.status(401).json(getErrorMessage(NO_COMMENT_ID));
+      }
+      await prisma.comment.delete({
+        where: {
+          id: +commentId
+        }
+      });
+      res.status(200).json({
+        success: true,
+        data: { id: commentId, message: DELETE_COMMENT_SUCCESSFULLY }
       });
     } catch (error) {
       res.status(404).send(getErrorMessage(error));

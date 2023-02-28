@@ -1,8 +1,10 @@
+export type UserRole = 'ADMIN' | 'SUBSCRIBER'
+
 export type AuthUser = {
   id: string
   email: string
   name: string
-  role: 'ADMIN' | 'USER'
+  role: UserRole
 }
 
 export type UserResponse = {

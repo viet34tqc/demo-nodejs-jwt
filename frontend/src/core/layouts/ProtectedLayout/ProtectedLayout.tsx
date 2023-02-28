@@ -1,3 +1,4 @@
+import AuthorizationUI from '@/core/components/ui/AuthorizationUI/AuthorizationUI'
 import { PropsWithChildren } from 'react'
 import { Link } from 'react-router-dom'
 import AddPost from '../../../views/Posts/components/AddPost'
@@ -13,7 +14,9 @@ const ProtectedLayout = ({ children }: PropsWithChildren) => {
             <Link to='/posts' className='hover:text-gray-400 transition-all'>
               Posts
             </Link>
-            <AddPost />
+            <AuthorizationUI allowedRoles={['ADMIN']}>
+              <AddPost />
+            </AuthorizationUI>
             <UserNavigation />
           </div>
         </div>

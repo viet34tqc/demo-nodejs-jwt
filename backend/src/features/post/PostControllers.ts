@@ -20,9 +20,6 @@ export class PostController {
         return res.status(404).send(getErrorMessage(USER_NOT_EXISTED));
       }
       const posts = await prisma.post.findMany({
-        where: {
-          authorId: userId
-        },
         orderBy: {
           createdAt: 'desc'
         },

@@ -8,4 +8,5 @@ export type CommentDTO = {
   content: string
   createdAt: string
   authorName: string
+  authorId: string
 }

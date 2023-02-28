@@ -8,6 +8,7 @@ const initCommentRoutes = (app: Application) => {
   const commentController = new CommentColtroller();
   router.use(verifyToken);
   router.get('/comments', commentController.getComments);
+  router.delete('/comments/:commentId', commentController.deleteComment);
   router.post('/comments', commentController.addComment);
   return app.use('/api/v1', router);
 };

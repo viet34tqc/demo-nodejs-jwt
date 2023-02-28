@@ -5,7 +5,7 @@ import { FormControl } from '@/core/components/ui/FormFields/FormControl'
 import { Spinner } from '@/core/components/ui/Spinner'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AxiosError } from 'axios'
-import { useReducer } from 'react'
+import { useEffect, useReducer } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { useParams } from 'react-router-dom'
@@ -30,6 +30,7 @@ const CommentForm = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<AddCommentForm>({
     resolver: zodResolver(schema),
@@ -50,6 +51,14 @@ const CommentForm = () => {
       },
     })
   }
+
+  useEffect(() => {
+    if (isFormOpen) {
+      reset({
+        content: '',
+      })
+    }
+  }, [isFormOpen, reset])
 
   return (
     <>
