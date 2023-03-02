@@ -21,7 +21,7 @@ const AuthorizationUI = ({ children, fallbackChildren, allowedRoles, policyCheck
     canAccess = allowedRoles?.includes(user.role)
   }
 
-  if (typeof policyCheck !== undefined) {
+  if (policyCheck) {
     canAccess = policyCheck
   }
 
