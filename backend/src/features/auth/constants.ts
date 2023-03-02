@@ -3,6 +3,7 @@ export const EMAIL_EXISTED = 'This email is already existed';
 export const USER_NOT_EXISTED = 'User not existed';
 export const INVALID_PASS = 'Invalid password';
 export const NO_TOKEN = 'No token provided';
+export const NO_REFRESH_TOKEN = 'No refresh token provided';
 export const restrictToRole = {
   ADMIN: 'Require admin role',
   SUBSCRIBER: 'Require subscriber role'

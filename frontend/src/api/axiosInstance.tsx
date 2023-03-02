@@ -15,11 +15,15 @@ axiosInstance.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config
-    if (error.response.status === 403 && !originalRequest._retry) {
-      // We only retry one time, in case the originalRequest fail again that leads to infinite loop
-      originalRequest._retry = true
-      await axiosInstance.post('/auth/refreshToken')
-      return axiosInstance(originalRequest)
+    if (error?.response?.status === 403 && !originalRequest._retry) {
+      try {
+        // We only retry one time, in case the originalRequest fail again that leads to infinite loop
+        originalRequest._retry = true
+        await axiosInstance.post('/auth/refreshToken')
+        return axiosInstance(originalRequest)
+      } catch (error) {
+        return Promise.reject(error)
+      }
     }
     return Promise.reject(error)
   },

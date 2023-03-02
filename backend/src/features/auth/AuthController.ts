@@ -9,7 +9,7 @@ import { getErrorMessage } from '../../utils';
 import { EMAIL_EXISTED, INVALID_PASS, NO_TOKEN, USER_NOT_EXISTED } from './constants';
 import { signJwt, verifyJwt } from './utils';
 
-class UserController {
+class AuthController {
   async register(req: Request, res: Response) {
     const { name, email, password, role } = req.body;
     try {
@@ -167,4 +167,4 @@ class UserController {
   }
 }
 
-export default UserController;
+export default AuthController;

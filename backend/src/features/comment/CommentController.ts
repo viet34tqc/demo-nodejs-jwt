@@ -8,7 +8,7 @@ export class CommentColtroller {
     try {
       const postId = req.query.postId;
       if (!postId) {
-        return res.status(401).json(getErrorMessage(NO_POST_ID_CONTENT));
+        return res.status(404).json(getErrorMessage(NO_POST_ID_CONTENT));
       }
       const comments = await prisma.comment.findMany({
         where: {
@@ -41,7 +41,7 @@ export class CommentColtroller {
       const userId = res.locals.jwtDecoded.id;
       const { postId, content } = req.body;
       if (!postId || !content) {
-        res.status(401).json(getErrorMessage(NO_POST_ID_CONTENT));
+        res.status(404).json(getErrorMessage(NO_POST_ID_CONTENT));
       }
       const comment = await prisma.comment.create({
         data: {
@@ -63,7 +63,7 @@ export class CommentColtroller {
     try {
       const { commentId } = req.params;
       if (!commentId) {
-        return res.status(401).json(getErrorMessage(NO_COMMENT_ID));
+        return res.status(404).json(getErrorMessage(NO_COMMENT_ID));
       }
       await prisma.comment.delete({
         where: {
