@@ -91,10 +91,9 @@ const AuthContextProvider = ({ children }: AuthProviderProps) => {
   }
 
   async function logoutFn() {
-    const response = await logoutUser()
+    await logoutUser()
     // We also need to remove cookie on client, otherwise client will call /me API without refreshToken => create infinite loop
     removeCookie('loggedInCookie')
-    return response.data.message
   }
 
   const loginMutation = useMutation({

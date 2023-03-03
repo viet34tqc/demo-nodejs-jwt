@@ -5,6 +5,7 @@
 export const baseConfig = {
   port: process.env.PORT || '3001',
   origin: process.env.ORIGIN || 'http://localhost:5173',
+  domain: process.env.DOMAIN || 'localhost', // need for setting cookie on production, two subdomains won't understand cookie from each other without domain attribute
   accessTokenSecret: process.env.ACCESS_SECRET || 'demo-nodejs-jwt',
   refreshTokenSecret: process.env.REFRESH_SECRET || 'demo-nodejs-jwt-refresh',
   accessTokenExpiration: Number(process.env.ACCESS_EXPIRATION) * 1000 || 3600 * 1000, // 1 hour

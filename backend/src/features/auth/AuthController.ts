@@ -6,8 +6,18 @@ import { baseConfig } from '../../config/baseConfig';
 
 import prisma from '../../config/prismaClient';
 import { getErrorMessage } from '../../utils';
-import { EMAIL_EXISTED, INVALID_PASS, NO_TOKEN, USER_NOT_EXISTED } from './constants';
+import { EMAIL_EXISTED, INVALID_PASS, NO_REFRESH_TOKEN, NO_TOKEN, USER_NOT_EXISTED } from './constants';
 import { signJwt, verifyJwt } from './utils';
+
+// We can also declare this variable as class property
+// However, `this.cookieOptions` could be undefined in AuthController class
+// That is because we assign AuthController methods to another reference in authRoutes which make this undefined
+// We can also use `bind` for every method of AuthController
+const cookieOptions = {
+  domain: baseConfig.domain, // need for setting cookie on production, two subdomains won't understand cookie from each other without domain attribute
+  maxAge: baseConfig.accessTokenExpiration,
+  httpOnly: true
+};
 
 class AuthController {
   async register(req: Request, res: Response) {
@@ -55,19 +65,18 @@ class AuthController {
 
       // Then return cookie to client for more security as well, instead of storing tokens in localStorage
       res.cookie('accessTokenCookie', accessToken, {
-        maxAge: baseConfig.accessTokenExpiration,
-        httpOnly: true
+        ...cookieOptions
       });
 
       // We need to send loggedIn cookie because accessToken is httpOnly.
       res.cookie('loggedInCookie', true, {
-        maxAge: baseConfig.accessTokenExpiration
+        ...cookieOptions,
+        httpOnly: false
       });
 
       // Only send cookie
       res.cookie('refreshTokenCookie', refreshToken, {
-        maxAge: baseConfig.refreshTokenExpiration,
-        httpOnly: true
+        ...cookieOptions
       });
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -87,17 +96,17 @@ class AuthController {
   refreshToken(req: Request, res: Response) {
     const refreshToken = req.cookies.refreshTokenCookie || req.header('Authorization')?.replace('Bearer ', '');
     if (!refreshToken) {
-      return res.status(403).send(getErrorMessage(NO_TOKEN));
+      return res.status(401).send(getErrorMessage(NO_REFRESH_TOKEN));
     }
     try {
       const decoded = verifyJwt(refreshToken, baseConfig.accessTokenSecret) as JwtPayload;
       const accessToken = signJwt({ id: decoded.id }, baseConfig.accessTokenSecret, baseConfig.accessTokenExpiration);
       res.cookie('accessTokenCookie', accessToken, {
-        maxAge: baseConfig.accessTokenExpiration,
-        httpOnly: true
+        ...cookieOptions
       });
       res.cookie('loggedInCookie', true, {
-        maxAge: baseConfig.accessTokenExpiration
+        ...cookieOptions,
+        httpOnly: false
       });
       return res.status(200).json({ accessToken });
     } catch (error) {
@@ -160,9 +169,9 @@ class AuthController {
     }
   }
   logout(req: Request, res: Response) {
-    res.clearCookie('accessTokenCookie');
-    res.clearCookie('loggedInCookie');
-    res.clearCookie('refreshTokenCookie');
+    res.clearCookie('accessTokenCookie', { domain: baseConfig.domain });
+    res.clearCookie('loggedInCookie', { domain: baseConfig.domain });
+    res.clearCookie('refreshTokenCookie', { domain: baseConfig.domain });
     res.status(200).send({ message: 'Logout successfully' });
   }
 }
