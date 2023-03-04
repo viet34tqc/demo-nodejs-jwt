@@ -1,9 +1,9 @@
-import { Post, User } from '@prisma/client';
+import { Post, Prisma, User } from '@prisma/client';
 import { Request, Response } from 'express';
 import prisma from '../../config/prismaClient';
 import { getErrorMessage } from '../../utils';
 import { USER_NOT_EXISTED } from '../auth/constants';
-import { NO_POST, POST_NO_TITLE } from './constants';
+import { DELETE_POST_SUCCESSFULLY, NO_POST, POST_NOT_FOUND, POST_NO_TITLE } from './constants';
 
 export class PostController {
   /**
@@ -89,7 +89,7 @@ export class PostController {
       });
 
       if (!post) {
-        res.status(404).send(getErrorMessage(NO_POST));
+        return res.status(404).send(getErrorMessage(NO_POST));
       }
 
       res.status(200).json({
@@ -97,6 +97,30 @@ export class PostController {
         data: post
       });
     } catch (error) {
+      res.status(404).send(getErrorMessage(error));
+    }
+  }
+
+  async deletePost(req: Request, res: Response) {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(404).send(getErrorMessage(NO_POST));
+    }
+
+    try {
+      await prisma.post.delete({
+        where: {
+          id: +id
+        }
+      });
+      return res.status(200).json({
+        success: true,
+        data: { message: DELETE_POST_SUCCESSFULLY }
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+        return res.status(404).send(getErrorMessage(POST_NOT_FOUND));
+      }
       res.status(404).send(getErrorMessage(error));
     }
   }

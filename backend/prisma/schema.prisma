@@ -37,7 +37,7 @@ model Comment {
   content   String?
   authorId  Int
   postId    Int
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade) // Delete post also delete related comment
   author    User     @relation(fields: [authorId], references: [id])
 }
 

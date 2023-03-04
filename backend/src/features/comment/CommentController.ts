@@ -60,11 +60,11 @@ export class CommentColtroller {
   }
 
   async deleteComment(req: Request, res: Response) {
+    const { commentId } = req.params;
+    if (!commentId) {
+      return res.status(404).json(getErrorMessage(NO_COMMENT_ID));
+    }
     try {
-      const { commentId } = req.params;
-      if (!commentId) {
-        return res.status(404).json(getErrorMessage(NO_COMMENT_ID));
-      }
       await prisma.comment.delete({
         where: {
           id: +commentId

@@ -9,6 +9,7 @@ const initPostRoutes = (app: Application) => {
   router.use(verifyToken);
   router.get('/posts', postController.getPosts);
   router.get('/posts/:id', postController.getPost);
+  router.delete('/posts/:id', postController.deletePost);
   router.post('/posts', postController.addPost);
   return app.use('/api/v1', router);
 };

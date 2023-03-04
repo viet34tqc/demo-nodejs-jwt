@@ -10,7 +10,7 @@ import { EMAIL_EXISTED, INVALID_PASS, NO_REFRESH_TOKEN, NO_TOKEN, USER_NOT_EXIST
 import { signJwt, verifyJwt } from './utils';
 
 // We can also declare this variable as class property
-// However, `this.cookieOptions` could be undefined in AuthController class
+// However, `this.cookieOptions` could be undefined in AuthController methods
 // That is because we assign AuthController methods to another reference in authRoutes which make this undefined
 // We can also use `bind` for every method of AuthController
 const cookieOptions = {
@@ -76,7 +76,8 @@ class AuthController {
 
       // Only send cookie
       res.cookie('refreshTokenCookie', refreshToken, {
-        ...cookieOptions
+        ...cookieOptions,
+        maxAge: baseConfig.refreshTokenExpiration
       });
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
