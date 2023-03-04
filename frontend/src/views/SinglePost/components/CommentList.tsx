@@ -42,8 +42,7 @@ const CommentList = () => {
     )
   }
 
-  if (!comments || comments.length === 0)
-    return <div className='mt-8'>There is no comment</div>
+  if (!comments || comments.length === 0) return <div className='mt-8'>There is no comment</div>
   return (
     <div className='mt-8'>
       {comments.map((props: CommentDTO) => (

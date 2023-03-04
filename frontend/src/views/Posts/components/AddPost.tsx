@@ -12,6 +12,7 @@ import { AxiosError } from 'axios'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
+import { matchRoutes, useLocation, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import { useAddPost } from '../apis/addPost'
 import { AddPostDTO } from '../types'
@@ -23,6 +24,8 @@ const schema = z.object({
 
 const AddPost = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const location = useLocation()
+  const navigate = useNavigate()
   const addPostMutation = useAddPost()
   const {
     register,
@@ -49,6 +52,9 @@ const AddPost = () => {
     addPostMutation.mutate(data, {
       onSuccess: () => {
         setIsOpen(false)
+        if (!matchRoutes([{ path: '/posts' }], location)) {
+          navigate('/posts')
+        }
       },
       onError: (error: unknown) => {
         if (error instanceof AxiosError) {

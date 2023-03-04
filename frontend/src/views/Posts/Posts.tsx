@@ -28,8 +28,7 @@ const Posts = () => {
     )
   }
 
-  if (!posts || posts?.length === 0)
-    return <ProtectedLayout>There is no posts</ProtectedLayout>
+  if (!posts || posts?.length === 0) return <ProtectedLayout>There is no posts</ProtectedLayout>
 
   return (
     <ProtectedLayout>
