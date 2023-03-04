@@ -1,5 +1,6 @@
 import { Button } from '@/core/components/ui/Button'
 import { Spinner } from '@/core/components/ui/Spinner'
+import { toastError } from '@/core/utils'
 import { TrashIcon } from '@heroicons/react/24/outline'
 import toast from 'react-hot-toast'
 import { useParams } from 'react-router-dom'
@@ -15,6 +16,9 @@ const DeleteComment = ({ id }: { id: string }) => {
         deleteCommentMutation.mutate(id, {
           onSuccess: () => {
             toast('Delete comment successfully')
+          },
+          onError: (error) => {
+            toastError(error)
           },
         })
       }

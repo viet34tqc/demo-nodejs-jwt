@@ -1,9 +1,9 @@
 import { formatDate } from '@/core/utils'
 import { CalendarIcon, UserIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
-import { Post } from '../types'
+import { PostDTO } from '../types'
 
-const PostItem = ({ id, title, content, authorName, createdAt }: Partial<Post>) => {
+const PostItem = ({ id, title, content, authorName, createdAt }: PostDTO) => {
   return (
     <div className='prose md:prose-lg prose-h2:mb-1 prose-slate max-w-none border-b pb-5 border-gray-200'>
       <Link to={`/posts/${id}`} className='no-underline'>

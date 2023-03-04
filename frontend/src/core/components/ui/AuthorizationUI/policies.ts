@@ -12,4 +12,12 @@ export const authorizedPolicies = {
 
     return false
   },
+
+  'post:delete': (user: AuthUser, authorId: string) => {
+    if (authorId === user.id) {
+      return true
+    }
+
+    return false
+  },
 }

@@ -22,7 +22,7 @@ const schema = z.object({
 
 type ProfileFormData = Pick<AuthUser, 'name' | 'role'>
 
-const AddPost = () => {
+const ProfileForm = () => {
   const [isOpen, setIsOpen] = useState(false)
   const updateProfileMutation = useUpdateProfile()
   const {
@@ -96,4 +96,4 @@ const AddPost = () => {
   )
 }
 
-export default AddPost
+export default ProfileForm

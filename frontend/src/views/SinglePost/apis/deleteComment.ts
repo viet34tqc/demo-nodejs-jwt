@@ -20,10 +20,5 @@ export function useDeleteComment(postId: string) {
         queryClient.invalidateQueries(['comments', postId])
       }
     },
-    onError: (_, __, context: any) => {
-      if (context?.previousDiscussions) {
-        queryClient.setQueryData(['posts'], context.previousDiscussions)
-      }
-    },
   })
 }

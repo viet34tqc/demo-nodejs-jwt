@@ -3,14 +3,14 @@ import { authKey } from '@/core/context/AuthContext'
 import { AuthUser } from '@/views/AuthPages/types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-export function updateProfile(data: Pick<AuthUser, 'name' | 'role'>) {
-  return axiosInstance.put('auth/updateProfile', data)
+export function updatePost(data: Pick<AuthUser, 'name' | 'role'>) {
+  return axiosInstance.put('posts/', data)
 }
 
-export function useUpdateProfile() {
+export function useupdatePost() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: updateProfile,
+    mutationFn: updatePost,
     onSuccess: (data) => {
       queryClient.setQueryData(authKey, (previous: any) => ({ ...previous, ...data.data }))
     },
