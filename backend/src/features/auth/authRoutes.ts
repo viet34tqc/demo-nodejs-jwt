@@ -8,8 +8,8 @@ const router = express.Router();
 
 const initUserRoutes = (app: Application) => {
   const userController = new UserController();
-  router.post('/auth/register', validatePwdMiddleware(authSchema), userController.register);
-  router.post('/auth/login', validatePwdMiddleware(authSchema), userController.login);
+  router.post('/auth/register', validatePwdMiddleware(authSchema), userController.register.bind(userController));
+  router.post('/auth/login', validatePwdMiddleware(authSchema), userController.login.bind(userController));
   router.get('/auth/me', verifyToken, userController.getCurrentUser);
   router.put('/auth/updateProfile', verifyToken, userController.updateProfile);
   router.get('/auth/logout', verifyToken, userController.logout);

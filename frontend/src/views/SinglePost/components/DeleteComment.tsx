@@ -12,6 +12,7 @@ const DeleteComment = ({ id }: { id: string }) => {
   const deleteCommentMutation = useDeleteComment(postId as string)
   return (
     <Button
+      title='Delete comment'
       onClick={() =>
         deleteCommentMutation.mutate(id, {
           onSuccess: () => {
@@ -22,7 +23,7 @@ const DeleteComment = ({ id }: { id: string }) => {
           },
         })
       }
-      className='bg-transparent text-red-400 ml-auto'
+      className='bg-transparent !text-red-400 ml-auto'
     >
       {deleteCommentMutation.isLoading ? <Spinner size='sm' /> : <TrashIcon className='w-5 h-5' />}
     </Button>

@@ -1,6 +1,6 @@
 import axiosInstance from '@/api/axiosInstance'
-import { RegisterCredentialsDTO, UserResponse } from '@/views/AuthPages/types'
+import { AuthUser, RegisterCredentialsDTO } from '@/views/AuthPages/types'
 
-export const registerUser = (data: RegisterCredentialsDTO): Promise<UserResponse> => {
+export const registerUser = (data: RegisterCredentialsDTO): Promise<AuthUser> => {
   return axiosInstance.post('/auth/register', data)
 }

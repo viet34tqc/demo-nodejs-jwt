@@ -31,6 +31,7 @@ const DeletePost = () => {
       title='Delete post'
       triggerButton={
         <Button
+          title='Delete post'
           onClick={() =>
             deletePostMutation.mutate(id as string, {
               onSuccess: () => {

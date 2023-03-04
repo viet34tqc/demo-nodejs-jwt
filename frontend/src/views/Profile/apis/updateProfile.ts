@@ -12,17 +12,12 @@ export function useUpdateProfile() {
   return useMutation({
     mutationFn: updateProfile,
     onSuccess: (data) => {
-      queryClient.setQueryData(authKey, (previous: any) => ({ ...previous, ...data.data }))
+      queryClient.setQueryData(authKey, (previous: any) => ({ ...previous, ...data }))
     },
     onSettled: (_, error) => {
       if (!error) {
         queryClient.invalidateQueries([authKey])
         queryClient.invalidateQueries(['posts']) // Update posts query because posts page displays author name.
-      }
-    },
-    onError: (_, __, context: any) => {
-      if (context?.previousDiscussions) {
-        queryClient.setQueryData([authKey], context.previousDiscussions)
       }
     },
   })

@@ -11,18 +11,11 @@ export function useAddPost() {
   return useMutation({
     mutationFn: addPost,
     onSuccess: (data) => {
-      queryClient.setQueryData(['posts'], (previous: any) => ({
-        data: [...previous.data, data.data],
-      }))
+      queryClient.setQueryData(['posts'], (previous: any) => [...previous, data])
     },
     onSettled: (_, error) => {
       if (!error) {
         queryClient.invalidateQueries(['posts'])
-      }
-    },
-    onError: (_, __, context: any) => {
-      if (context?.previousDiscussions) {
-        queryClient.setQueryData(['posts'], context.previousDiscussions)
       }
     },
   })

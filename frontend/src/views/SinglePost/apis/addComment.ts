@@ -11,18 +11,11 @@ export function useCreateComment(postId: string) {
   return useMutation({
     mutationFn: addComment,
     onSuccess: (data) => {
-      queryClient.setQueryData(['comments', postId], (previous: any) => ({
-        data: [...previous.data, data.data],
-      }))
+      queryClient.setQueryData(['comments', postId], (previous: any) => [...previous, data])
     },
     onSettled: (_, error) => {
       if (!error) {
         queryClient.invalidateQueries(['comments', postId])
-      }
-    },
-    onError: (_, __, context: any) => {
-      if (context?.previousDiscussions) {
-        queryClient.setQueryData(['posts'], context.previousDiscussions)
       }
     },
   })

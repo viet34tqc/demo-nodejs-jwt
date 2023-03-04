@@ -32,21 +32,21 @@ const SinglePost = () => {
     <ProtectedLayout>
       <div className='max-w-none mb-8 pb-8 border-b border-gray-300'>
         <div className='flex items-center justify-between mb-8'>
-          <h1 className='text-5xl font-extrabold'>{post.data.title}</h1>
+          <h1 className='text-5xl font-extrabold'>{post.title}</h1>
 
           <div className='text-gray-300 flex'>
             <AuthorizationUI
-              policyCheck={authorizedPolicies['post:delete'](user as AuthUser, post.data.authorId)}
+              policyCheck={authorizedPolicies['post:delete'](user as AuthUser, post.authorId)}
             >
               <DeletePost />
-              <UpdatePost post={post.data} />
+              <UpdatePost post={post} />
             </AuthorizationUI>
           </div>
         </div>
-        {post.data.content && (
+        {post.content && (
           <div
             className='prose prose-slate md:prose-lg'
-            dangerouslySetInnerHTML={{ __html: post.data.content }}
+            dangerouslySetInnerHTML={{ __html: post.content }}
           />
         )}
       </div>

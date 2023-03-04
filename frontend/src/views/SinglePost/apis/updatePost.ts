@@ -1,8 +1,7 @@
 import axiosInstance from '@/api/axiosInstance'
-import { PostDTO } from '@/views/Posts/types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-export function updatePost(data: Partial<PostDTO>) {
+export function updatePost(data: { id: string; content?: string; title: string }) {
   return axiosInstance.put('posts', data)
 }
 
@@ -11,7 +10,7 @@ export function useUpdatePost(id: string) {
   return useMutation({
     mutationFn: updatePost,
     onSuccess: (data) => {
-      queryClient.setQueryData(['posts', id], (previous: any) => ({ ...previous, ...data.data }))
+      queryClient.setQueryData(['posts', id], (previous: any) => ({ ...previous, ...data }))
     },
     onSettled: (_, error) => {
       if (!error) {

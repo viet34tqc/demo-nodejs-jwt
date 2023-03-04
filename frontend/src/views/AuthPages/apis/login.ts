@@ -1,6 +1,6 @@
 import axiosInstance from '@/api/axiosInstance'
-import { LoginCredentialsDTO, UserResponse } from '@/views/AuthPages/types'
+import { AuthUser, LoginCredentialsDTO } from '@/views/AuthPages/types'
 
-export const loginUser = (data: LoginCredentialsDTO): Promise<UserResponse> => {
+export const loginUser = (data: LoginCredentialsDTO): Promise<AuthUser> => {
   return axiosInstance.post('/auth/login', data)
 }

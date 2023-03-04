@@ -20,7 +20,7 @@ import { useCookies } from 'react-cookie'
 
 import { Spinner } from '../components/ui/Spinner'
 
-export const getCurrentUser = (): Promise<UserResponse> => {
+export const getCurrentUser = (): Promise<AuthUser> => {
   return axiosInstance.get('/auth/me')
 }
 
@@ -69,8 +69,7 @@ const AuthContextProvider = ({ children }: AuthProviderProps) => {
 
   async function loadUser() {
     if (cookies.loggedInCookie) {
-      const response = await getCurrentUser()
-      return response.data
+      return await getCurrentUser()
     }
     return null
   }
@@ -81,13 +80,11 @@ const AuthContextProvider = ({ children }: AuthProviderProps) => {
   )
 
   async function loginFn(data: LoginCredentialsDTO) {
-    const response = await loginUser(data)
-    return response.data
+    return await loginUser(data)
   }
 
   async function registerFn(data: RegisterCredentialsDTO) {
-    const response = await registerUser(data)
-    return response.data
+    return await registerUser(data)
   }
 
   async function logoutFn() {

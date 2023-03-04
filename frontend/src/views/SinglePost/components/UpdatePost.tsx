@@ -18,19 +18,20 @@ import { z } from 'zod'
 import { useUpdatePost } from '../apis/updatePost'
 
 type UpdatePostForm = {
-  title?: string
+  title: string
   content?: string
 }
 
 const schema = z.object({
-  title: z.string().optional(),
+  title: z.string(),
   content: z.string().optional(),
 })
 
 const UpdatePost = ({ post }: { post: PostDTO }) => {
   const { id } = useParams()
+  if (!id) return null
   const [isOpen, setIsOpen] = useState(false)
-  const updatePostMutation = useUpdatePost(id as string)
+  const updatePostMutation = useUpdatePost(id)
   const {
     control,
     register,
@@ -77,7 +78,11 @@ const UpdatePost = ({ post }: { post: PostDTO }) => {
       setIsOpen={setIsOpen}
       title='Update post'
       triggerButton={
-        <Button onClick={() => setIsOpen(true)} className='bg-transparent !text-red-400 ml-auto'>
+        <Button
+          title='Update post'
+          onClick={() => setIsOpen(true)}
+          className='bg-transparent !text-red-400 ml-auto'
+        >
           {updatePostMutation.isLoading ? (
             <Spinner size='sm' />
           ) : (

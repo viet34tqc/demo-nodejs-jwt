@@ -28,13 +28,13 @@ const Posts = () => {
     )
   }
 
-  if (!posts || posts?.data.length === 0)
+  if (!posts || posts?.length === 0)
     return <ProtectedLayout>There is no posts</ProtectedLayout>
 
   return (
     <ProtectedLayout>
       <div className='space-y-6 '>
-        {posts.data.map((props: PostDTO) => (
+        {posts.map((props: PostDTO) => (
           <PostItem {...props} key={props.id} />
         ))}
       </div>

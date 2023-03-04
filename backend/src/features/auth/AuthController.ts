@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { compareSync, hashSync } from 'bcrypt';
 import { Request, Response } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
@@ -20,6 +20,39 @@ const cookieOptions = {
 };
 
 class AuthController {
+  async issueCookie(req: Request, res: Response, user: User) {
+    // Generate JWT tokens
+    // We are only including user id in the payload for security
+    const accessToken = signJwt({ id: user.id }, baseConfig.accessTokenSecret, baseConfig.accessTokenExpiration);
+    const refreshToken = signJwt({ id: user.id }, baseConfig.refreshTokenSecret, baseConfig.refreshTokenExpiration);
+
+    // Then return cookie to client for more security as well, instead of storing tokens in localStorage
+    res.cookie('accessTokenCookie', accessToken, {
+      ...cookieOptions
+    });
+
+    // We need to send loggedIn cookie because accessToken is httpOnly.
+    res.cookie('loggedInCookie', true, {
+      ...cookieOptions,
+      httpOnly: false
+    });
+
+    // Only send cookie
+    res.cookie('refreshTokenCookie', refreshToken, {
+      ...cookieOptions,
+      maxAge: baseConfig.refreshTokenExpiration
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...rest } = user;
+
+    res.status(200).json({
+      success: true,
+      data: {
+        ...rest
+      }
+    });
+  }
   async register(req: Request, res: Response) {
     const { name, email, password, role } = req.body;
     try {
@@ -31,7 +64,7 @@ class AuthController {
           password: hashSync(password, 8)
         }
       });
-      res.status(200).json({ success: true, data: user });
+      this.issueCookie(req, res, user);
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
         return res.status(404).send(getErrorMessage(EMAIL_EXISTED));
@@ -57,39 +90,7 @@ class AuthController {
       if (!isPasswordValidated) {
         return res.status(401).send(getErrorMessage(INVALID_PASS));
       }
-
-      // Generate JWT tokens
-      // We are only including user id in the payload for security
-      const accessToken = signJwt({ id: user.id }, baseConfig.accessTokenSecret, baseConfig.accessTokenExpiration);
-      const refreshToken = signJwt({ id: user.id }, baseConfig.refreshTokenSecret, baseConfig.refreshTokenExpiration);
-
-      // Then return cookie to client for more security as well, instead of storing tokens in localStorage
-      res.cookie('accessTokenCookie', accessToken, {
-        ...cookieOptions
-      });
-
-      // We need to send loggedIn cookie because accessToken is httpOnly.
-      res.cookie('loggedInCookie', true, {
-        ...cookieOptions,
-        httpOnly: false
-      });
-
-      // Only send cookie
-      res.cookie('refreshTokenCookie', refreshToken, {
-        ...cookieOptions,
-        maxAge: baseConfig.refreshTokenExpiration
-      });
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...rest } = user;
-
-      res.status(200).json({
-        success: true,
-        data: {
-          ...rest,
-          role: user.role
-        }
-      });
+      this.issueCookie(req, res, user);
     } catch (error) {
       res.status(404).send(getErrorMessage(error));
     }
