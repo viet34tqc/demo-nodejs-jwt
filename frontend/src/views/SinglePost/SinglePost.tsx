@@ -9,6 +9,7 @@ import { usePost } from './apis/getPost'
 import CommentForm from './components/CommentForm'
 import CommentList from './components/CommentList'
 import DeletePost from './components/DeletePost'
+import UpdatePost from './components/UpdatePost'
 
 const SinglePost = () => {
   const { id } = useParams()
@@ -33,11 +34,12 @@ const SinglePost = () => {
         <div className='flex items-center justify-between mb-8'>
           <h1 className='text-5xl font-extrabold'>{post.data.title}</h1>
 
-          <div className='text-gray-300'>
+          <div className='text-gray-300 flex'>
             <AuthorizationUI
               policyCheck={authorizedPolicies['post:delete'](user as AuthUser, post.data.authorId)}
             >
               <DeletePost />
+              <UpdatePost post={post.data} />
             </AuthorizationUI>
           </div>
         </div>

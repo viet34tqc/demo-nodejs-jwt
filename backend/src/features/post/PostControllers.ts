@@ -124,4 +124,27 @@ export class PostController {
       res.status(404).send(getErrorMessage(error));
     }
   }
+
+  async updatePost(req: Request, res: Response) {
+    try {
+      const { id, title, content } = req.body;
+      const post = await prisma.post.update({
+        where: {
+          id: +id
+        },
+        data: {
+          id: +id,
+          title,
+          content
+        }
+      });
+
+      res.status(200).json({
+        success: true,
+        data: post
+      });
+    } catch (error) {
+      res.status(404).send(getErrorMessage(error));
+    }
+  }
 }
