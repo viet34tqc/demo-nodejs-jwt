@@ -11,7 +11,11 @@ export function useAddPost() {
   return useMutation({
     mutationFn: addPost,
     onSuccess: (data) => {
-      queryClient.setQueryData(['posts'], (previous: any) => [...previous, data])
+      // Invalidate the first page
+      queryClient.setQueryData(['posts', { page: 1 }], (previous: any) => ({
+        ...previous,
+        postsData: [...previous.postsData, data],
+      }))
     },
     onSettled: (_, error) => {
       if (!error) {

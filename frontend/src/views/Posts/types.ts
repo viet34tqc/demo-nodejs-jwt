@@ -11,3 +11,7 @@ export type AddPostDTO = {
   title: string
   content: string
 }
+
+export type PostsParams = {
+  page: number
+}

@@ -1,14 +1,16 @@
 import axiosInstance from '@/api/axiosInstance'
 import { useQuery } from '@tanstack/react-query'
-import { PostDTO } from '../types'
+import { PostDTO, PostsParams } from '../types'
 
-export function getPosts(): Promise<PostDTO[]> {
-  return axiosInstance.get('posts')
+export function getPosts(
+  params: PostsParams,
+): Promise<{ postsData: PostDTO[]; totalCount: number }> {
+  return axiosInstance.get('posts', { params })
 }
 
-export function usePosts() {
+export function usePosts(params: PostsParams) {
   return useQuery({
-    queryKey: ['posts'],
-    queryFn: getPosts,
+    queryKey: ['posts', params],
+    queryFn: () => getPosts(params),
   })
 }

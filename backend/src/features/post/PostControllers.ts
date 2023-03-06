@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import prisma from '../../config/prismaClient';
 import { getErrorMessage } from '../../utils';
 import { USER_NOT_EXISTED } from '../auth/constants';
-import { DELETE_POST_SUCCESSFULLY, NO_POST, POST_NOT_FOUND, POST_NO_TITLE } from './constants';
+import { DELETE_POST_SUCCESSFULLY, NO_POST, PAGE_SIZE, POST_NOT_FOUND, POST_NO_TITLE } from './constants';
 
 export class PostController {
   /**
@@ -19,7 +19,7 @@ export class PostController {
       if (!userId) {
         return res.status(404).send(getErrorMessage(USER_NOT_EXISTED));
       }
-      const posts = await prisma.post.findMany({
+      const totalPosts = await prisma.post.findMany({
         orderBy: {
           createdAt: 'desc'
         },
@@ -27,10 +27,22 @@ export class PostController {
           author: true
         }
       });
-      if (!posts.length) {
+      if (!totalPosts.length) {
         return res.status(200).send({ success: true, data: [] });
       }
-      const data = posts.map((post: Post & { author: User }) => ({
+      const page = req.query.page;
+      const skip = page && +page > 1 ? (+page - 1) * PAGE_SIZE : 0;
+      const posts = await prisma.post.findMany({
+        take: PAGE_SIZE,
+        skip,
+        orderBy: {
+          createdAt: 'desc'
+        },
+        include: {
+          author: true
+        }
+      });
+      const postsData = posts.map((post: Post & { author: User }) => ({
         id: post.id,
         title: post.title,
         content: post.content,
@@ -39,7 +51,10 @@ export class PostController {
       }));
       res.status(200).send({
         success: true,
-        data
+        data: {
+          postsData,
+          totalCount: totalPosts.length
+        }
       });
     } catch (error) {
       res.status(404).send(getErrorMessage(error));

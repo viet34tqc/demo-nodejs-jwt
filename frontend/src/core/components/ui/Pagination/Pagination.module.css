@@ -1,0 +1,24 @@
+.paginationWrapper {
+  @apply flex justify-center list-none mt-8 mb-[64px];
+}
+.item {
+  @apply flex justify-center items-center w-9 aspect-square px-3 text-lg text-red-400 transition-all cursor-pointer;
+}
+
+.paginationItem:hover,
+.selected {
+  @apply bg-[#004d71] text-white;
+}
+
+.arrow {
+  @apply text-[#382f2d];
+}
+
+.disabled,
+.dots:hover {
+  @apply bg-transparent cursor-default;
+}
+
+.disabled {
+  @apply pointer-events-none opacity-50;
+}

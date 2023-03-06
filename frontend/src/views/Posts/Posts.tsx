@@ -1,15 +1,23 @@
+import Pagination from '@/core/components/ui/Pagination'
 import { Spinner } from '@/core/components/ui/Spinner'
 import ProtectedLayout from '@/core/layouts/ProtectedLayout/ProtectedLayout'
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import toast from 'react-hot-toast'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useSearchParams } from 'react-router-dom'
 import { usePosts } from './apis/getPosts'
 import PostItem from './components/PostItem'
 import { PostDTO } from './types'
 
 const Posts = () => {
-  const { data: posts, isLoading } = usePosts()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const params = { page: searchParams.get('page') ? Number(searchParams.get('page')) : 1 }
+  const { data, isLoading } = usePosts(params)
   const location = useLocation()
+
+  // Scroll to top when page change
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [params.page])
 
   useEffect(() => {
     if (location?.state?.message) {
@@ -28,14 +36,21 @@ const Posts = () => {
     )
   }
 
-  if (!posts || posts?.length === 0) return <ProtectedLayout>There is no posts</ProtectedLayout>
+  if (!data?.postsData || data.postsData?.length === 0)
+    return <ProtectedLayout>There is no posts</ProtectedLayout>
 
   return (
     <ProtectedLayout>
       <div className='space-y-6 '>
-        {posts.map((props: PostDTO) => (
+        {data?.postsData.map((props: PostDTO) => (
           <PostItem {...props} key={props.id} />
         ))}
+        <Pagination
+          currentPage={+params.page}
+          pageSize={3}
+          onPageChange={(page: number) => setSearchParams({ page: page.toString() })}
+          totalCount={data.totalCount}
+        />
       </div>
     </ProtectedLayout>
   )
