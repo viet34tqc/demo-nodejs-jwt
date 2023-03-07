@@ -1,4 +1,4 @@
-# DOC
+# Demo NodeJS + ReactJS
 
 ## Tech stack
 
@@ -6,7 +6,6 @@
 
 - express
 - jsonwebtoken
-- mysql2
 - prisma
 - Dev packages:
   - ts-node: Running TS directly without having to wait for it to compiled
@@ -19,6 +18,16 @@
 
 - React
 - TailwindCSS
+- React Hook Form
+- React Query
+- Zod
+
+## Features
+
+- Authentication using JWT via cookie
+- Display posts with pagination
+- User can create, update, delete post and comments for each post
+- Admin user can delete comment while Subscriber user cannot
 
 ## Routes
 
@@ -30,6 +39,7 @@
   - GET: '/api/v1/profile/'
   - POST: '/api/v1/comment'
   - POST: '/api/v1/posts'
+  - PUT: '/api/v1/posts'
   - PUT: '/api/v1/profile/'
   - PUT: '/api/v1/posts/:id'
 
