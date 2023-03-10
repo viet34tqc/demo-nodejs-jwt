@@ -1,15 +1,7 @@
 import axiosInstance from '@/api/axiosInstance'
-import { loginUser, logoutUser, registerUser } from '@/views/AuthPages/apis'
-import { AuthUser, LoginCredentialsDTO, RegisterCredentialsDTO } from '@/views/AuthPages/types'
+import { AuthUser } from '@/views/AuthPages/types'
 
-import {
-  QueryObserverResult,
-  RefetchOptions,
-  useMutation,
-  UseMutationResult,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import React, { createContext, useContext } from 'react'
 import { useCookies } from 'react-cookie'
 
@@ -21,15 +13,6 @@ export const getCurrentUser = (): Promise<AuthUser> => {
 
 interface AuthContextValues {
   user: AuthUser | null | undefined
-  loginMutation: UseMutationResult<AuthUser, any, LoginCredentialsDTO>
-  logoutMutation: UseMutationResult<any, any, void, any>
-  registerMutation: UseMutationResult<AuthUser, any, RegisterCredentialsDTO>
-  isLoggingIn: boolean
-  isLoggingOut: boolean
-  isRegistering: boolean
-  refetchUser: (
-    options?: RefetchOptions | undefined,
-  ) => Promise<QueryObserverResult<AuthUser | null, unknown>>
   error: unknown
 }
 
@@ -41,9 +24,7 @@ export const AuthContext = createContext<AuthContextValues | null>(null)
 export const authKey = ['auth-user']
 
 const AuthContextProvider = ({ children }: AuthProviderProps) => {
-  const queryClient = useQueryClient() // returns the current QueryClient instance created in AppProvider.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [cookies, setCookie, removeCookie] = useCookies(['loggedInCookie'])
+  const [cookies] = useCookies(['loggedInCookie'])
   // This is much like setUser using setState,
   // but instead of saving the user in the state, we are saving it using useQuery with a key
   // This query runs every time the app is mounted to get the user data when we reload the page after login
@@ -55,7 +36,6 @@ const AuthContextProvider = ({ children }: AuthProviderProps) => {
     status,
     isLoading,
     isSuccess,
-    refetch,
   } = useQuery({
     queryKey: authKey,
     queryFn: loadUser,
@@ -69,60 +49,12 @@ const AuthContextProvider = ({ children }: AuthProviderProps) => {
     return null
   }
 
-  const setUser = React.useCallback(
-    (data: AuthUser) => queryClient.setQueryData(authKey, data),
-    [queryClient],
-  )
-
-  async function loginFn(data: LoginCredentialsDTO) {
-    return await loginUser(data)
-  }
-
-  async function registerFn(data: RegisterCredentialsDTO) {
-    return await registerUser(data)
-  }
-
-  async function logoutFn() {
-    await logoutUser()
-    // We also need to remove cookie on client, otherwise client will call /me API without refreshToken => create infinite loop
-    removeCookie('loggedInCookie')
-  }
-
-  const loginMutation = useMutation({
-    mutationFn: loginFn,
-    onSuccess: (user) => {
-      setUser(user)
-    },
-  })
-
-  const registerMutation = useMutation({
-    mutationFn: registerFn,
-    onSuccess: (user) => {
-      setUser(user)
-    },
-  })
-
-  const logoutMutation = useMutation({
-    mutationFn: logoutFn,
-    onSuccess: () => {
-      setUser(null as never)
-      queryClient.clear()
-    },
-  })
-
   const value = React.useMemo(
     () => ({
       user,
       error,
-      refetchUser: refetch,
-      loginMutation,
-      isLoggingIn: loginMutation.isLoading,
-      logoutMutation,
-      isLoggingOut: logoutMutation.isLoading,
-      registerMutation,
-      isRegistering: registerMutation.isLoading,
     }),
-    [user, error, refetch, loginMutation, logoutMutation, registerMutation],
+    [user, error],
   )
 
   if (isSuccess) {
@@ -143,6 +75,7 @@ const AuthContextProvider = ({ children }: AuthProviderProps) => {
 
   return <div className='h-screen w-screen grid place-items-center'>Unhandled status: {status}</div>
 }
+
 export default AuthContextProvider
 export const useAuth = () => {
   const context = useContext(AuthContext) as AuthContextValues

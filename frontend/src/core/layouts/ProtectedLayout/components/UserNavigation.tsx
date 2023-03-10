@@ -1,20 +1,19 @@
-import { useAuth } from '@/core/context/AuthContext'
+import { useLogout } from '@/views/AuthPages/apis/logout'
 import { Menu, Transition } from '@headlessui/react'
 import { UserIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { Link, useNavigate } from 'react-router-dom'
 
 const UserNavigation = () => {
-  const { logoutMutation } = useAuth()
   const navigate = useNavigate()
-
+  const { mutate } = useLogout()
   const userNavigation = [
     { name: 'Your Profile', to: '/profile' },
     {
       name: 'Sign out',
       to: '',
       onClick: () => {
-        logoutMutation.mutate(null as never, {
+        mutate(null as never, {
           onSuccess: () => {
             navigate('/')
           },

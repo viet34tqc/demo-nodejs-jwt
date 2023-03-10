@@ -5,7 +5,6 @@ import { Input } from '@/core/components/ui/FormFields/Input'
 import { Label } from '@/core/components/ui/FormFields/Label'
 import { Select } from '@/core/components/ui/FormFields/Select'
 import { Spinner } from '@/core/components/ui/Spinner'
-import { useAuth } from '@/core/context/AuthContext'
 import AuthLayout from '@/core/layouts/AuthLayout'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AxiosError } from 'axios'
@@ -13,6 +12,7 @@ import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
+import { useRegister } from '../apis/register'
 import { RegisterCredentialsDTO } from '../types'
 
 const schema = z.object({
@@ -23,7 +23,8 @@ const schema = z.object({
 
 const Register = () => {
   const navigate = useNavigate()
-  const { registerMutation, isRegistering } = useAuth()
+  const { mutate, isLoading: isRegistering } = useRegister()
+
   const {
     register,
     handleSubmit,
@@ -36,7 +37,7 @@ const Register = () => {
   })
 
   const onSubmit = async (data: RegisterCredentialsDTO) => {
-    registerMutation.mutate(data, {
+    mutate(data, {
       onSuccess: () => {
         navigate('/posts')
       },
@@ -74,7 +75,7 @@ const Register = () => {
         </FormControl>
 
         <Button type='submit' className='w-full gap-2' disabled={isRegistering}>
-          Login
+          Register
           {isRegistering && <Spinner size='sm' className='text-current' />}
         </Button>
       </form>

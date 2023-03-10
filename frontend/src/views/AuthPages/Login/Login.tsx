@@ -4,7 +4,6 @@ import { FormControl } from '@/core/components/ui/FormFields/FormControl'
 import { Input } from '@/core/components/ui/FormFields/Input'
 import { Label } from '@/core/components/ui/FormFields/Label'
 import { Spinner } from '@/core/components/ui/Spinner'
-import { useAuth } from '@/core/context/AuthContext'
 import AuthLayout from '@/core/layouts/AuthLayout'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AxiosError } from 'axios'
@@ -12,6 +11,7 @@ import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
+import { useLogin } from '../apis/login'
 import { LoginCredentialsDTO } from '../types'
 
 const schema = z.object({
@@ -21,7 +21,7 @@ const schema = z.object({
 
 const Login = () => {
   const navigate = useNavigate()
-  const { loginMutation, isLoggingIn } = useAuth()
+  const { mutate, isLoading: isLoggingIn } = useLogin()
   const {
     register,
     handleSubmit,
@@ -31,7 +31,7 @@ const Login = () => {
   })
 
   const onSubmit = async (data: LoginCredentialsDTO) => {
-    loginMutation.mutate(data, {
+    mutate(data, {
       onSuccess: () => {
         navigate('/posts')
       },
