@@ -12,10 +12,14 @@ export function useAddPost() {
     mutationFn: addPost,
     onSuccess: (data) => {
       // Invalidate the first page
-      queryClient.setQueryData(['posts', { page: 1 }], (previous: any) => ({
-        ...previous,
-        postsData: [...previous.postsData, data],
-      }))
+      queryClient.setQueryData(['posts', { page: 1 }], (previous: any) => {
+        // If posts page is not loaded yet, previous data return undefined, ex: single post page is loaded first
+        if (!previous) return
+        return {
+          ...previous,
+          postsData: [...previous.postsData, data],
+        }
+      })
     },
     onSettled: (_, error) => {
       if (!error) {
