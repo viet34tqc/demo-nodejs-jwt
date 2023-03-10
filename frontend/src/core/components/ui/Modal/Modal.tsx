@@ -1,5 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react'
-import { cloneElement, Dispatch, Fragment, ReactElement } from 'react'
+import { Dispatch, Fragment, ReactElement } from 'react'
 
 // isOpen and setIsOpen should be put outside of this child component for more control
 // Parent component should contain only Modal component for better performance.
@@ -8,14 +8,12 @@ type Props = {
   isOpen: boolean
   setIsOpen: Dispatch<React.SetStateAction<boolean>>
   title: string
-  triggerButton: ReactElement
   children: ReactElement // use ReactElement here because cloneElement doesn't accept ReactNode
 }
 
-const Modal = ({ isOpen, setIsOpen, title, triggerButton, children }: Props) => {
+const Modal = ({ isOpen, setIsOpen, title, children }: Props) => {
   return (
     <>
-      {cloneElement(triggerButton, { onClick: () => setIsOpen(true) })}
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog as='div' className='relative z-10' onClose={() => setIsOpen(false)}>
           <Transition.Child

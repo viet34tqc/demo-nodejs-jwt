@@ -25,6 +25,10 @@ p:last-child {
   margin-bottom: 0;
 }
 
+p:has(br:only-child) {
+  display: none;
+}
+
 .c-container {
   @apply container mx-auto px-4;
 }

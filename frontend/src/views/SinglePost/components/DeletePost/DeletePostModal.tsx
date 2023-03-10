@@ -2,15 +2,14 @@ import { Button } from '@/core/components/ui/Button'
 import Modal from '@/core/components/ui/Modal'
 import { Spinner } from '@/core/components/ui/Spinner'
 import { toastError } from '@/core/utils'
-import { TrashIcon } from '@heroicons/react/24/outline'
-import { useState } from 'react'
-import toast from 'react-hot-toast'
+import React, { Dispatch } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useDeletePost } from '../apis/deletePost'
+import { useDeletePost } from '../../apis/deletePost'
 
-const DeletePost = () => {
+type Props = { isOpen: boolean; setIsOpen: Dispatch<React.SetStateAction<boolean>> }
+
+const DeletePostModal = ({ isOpen, setIsOpen }: Props) => {
   const { id } = useParams()
-  const [isOpen, setIsOpen] = useState(false)
   const deletePostMutation = useDeletePost(id as string)
   const navigate = useNavigate()
   const handleDeletePost = () => {
@@ -23,28 +22,8 @@ const DeletePost = () => {
       },
     })
   }
-
   return (
-    <Modal
-      isOpen={isOpen}
-      setIsOpen={setIsOpen}
-      title='Delete post'
-      triggerButton={
-        <Button
-          title='Delete post'
-          onClick={() =>
-            deletePostMutation.mutate(id as string, {
-              onSuccess: () => {
-                toast('Delete post successfully')
-              },
-            })
-          }
-          className='bg-transparent !text-red-400 ml-auto'
-        >
-          {deletePostMutation.isLoading ? <Spinner size='sm' /> : <TrashIcon className='w-5 h-5' />}
-        </Button>
-      }
-    >
+    <Modal isOpen={isOpen} setIsOpen={setIsOpen} title='Delete post'>
       <>
         <p className='mb-4'>Are you sure you want to delete this post?</p>
         <div className='flex justify-end gap-2'>
@@ -61,4 +40,4 @@ const DeletePost = () => {
   )
 }
 
-export default DeletePost
+export default DeletePostModal

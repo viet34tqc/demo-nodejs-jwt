@@ -5,12 +5,12 @@ import { FormControl } from '@/core/components/ui/FormFields/FormControl'
 import { Spinner } from '@/core/components/ui/Spinner'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AxiosError } from 'axios'
-import { useEffect, useReducer } from 'react'
+import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { useParams } from 'react-router-dom'
 import { z } from 'zod'
-import { useCreateComment } from '../apis/addComment'
+import { useCreateComment } from '../../apis/addComment'
 
 const schema = z.object({
   content: z.string({
@@ -22,9 +22,13 @@ type AddCommentForm = {
   content: string
 }
 
-const CommentForm = () => {
+type Props = {
+  isFormOpen: boolean
+  toggleForm: React.DispatchWithoutAction
+}
+
+const CreateCommentModal = ({ isFormOpen, toggleForm }: Props) => {
   const { id: postId } = useParams()
-  const [isFormOpen, toggleForm] = useReducer((state) => !state, false)
   const addCommentMutation = useCreateComment(postId as string)
 
   const {
@@ -61,31 +65,22 @@ const CommentForm = () => {
   }, [isFormOpen, reset])
 
   return (
-    <>
-      <div className='flex justify-between items-center'>
-        <h3 className='font-bold'>Comments</h3>
-        <Button onClick={toggleForm}>Create comment</Button>
-      </div>
+    <form onSubmit={handleSubmit(onSubmit)} className='flex gap-4 flex-col mt-4'>
+      <FormControl className='!flex flex-col'>
+        <Controller
+          control={control}
+          name='content'
+          render={({ field }) => <Editor {...field} />}
+        />
+        <FieldError message={errors.content?.message} />
+      </FormControl>
 
-      {isFormOpen && (
-        <form onSubmit={handleSubmit(onSubmit)} className='flex gap-4 flex-col mt-4'>
-          <FormControl className='!flex flex-col'>
-            <Controller
-              control={control}
-              name='content'
-              render={({ field }) => <Editor {...field} />}
-            />
-            <FieldError message={errors.content?.message} />
-          </FormControl>
-
-          <Button type='submit' className='gap-2'>
-            Add comment
-            {addCommentMutation.isLoading && <Spinner size='sm' className='text-current' />}
-          </Button>
-        </form>
-      )}
-    </>
+      <Button type='submit' className='gap-2'>
+        Add comment
+        {addCommentMutation.isLoading && <Spinner size='sm' className='text-current' />}
+      </Button>
+    </form>
   )
 }
 
-export default CommentForm
+export default CreateCommentModal

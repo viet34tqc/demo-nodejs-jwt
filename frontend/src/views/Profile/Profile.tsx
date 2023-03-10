@@ -1,6 +1,6 @@
 import { useAuth } from '@/core/context/AuthContext'
 import ProtectedLayout from '@/core/layouts/ProtectedLayout/ProtectedLayout'
-import ProfileForm from './components/ProfileForm'
+import UpdateProfile from './components/UpdateProfile'
 
 const ProfileRow = ({ name, value }: { name: string; value: string | undefined }) => {
   return (
@@ -17,7 +17,7 @@ const Profile = () => {
     <ProtectedLayout>
       <div className='flex justify-between items-center mb-8'>
         <h1 className='text-xl font-bold'>Profile</h1>
-        <ProfileForm />
+        <UpdateProfile />
       </div>
       <div>
         <ProfileRow name='Name' value={user?.name} />

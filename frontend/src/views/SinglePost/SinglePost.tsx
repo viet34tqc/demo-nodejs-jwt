@@ -6,10 +6,10 @@ import ProtectedLayout from '@/core/layouts/ProtectedLayout/ProtectedLayout'
 import { useParams } from 'react-router-dom'
 import { AuthUser } from '../AuthPages/types'
 import { usePost } from './apis/getPost'
-import CommentForm from './components/CommentForm'
 import CommentList from './components/CommentList'
-import DeletePost from './components/DeletePost'
-import UpdatePost from './components/UpdatePost'
+import CreateComment from './components/CreateComment'
+import DeletePost from './components/DeletePost/DeletePost'
+import UpdatePost from './components/UpdatePost/UpdatePost'
 
 const SinglePost = () => {
   const { id } = useParams()
@@ -39,7 +39,7 @@ const SinglePost = () => {
               policyCheck={authorizedPolicies['post:delete'](user as AuthUser, post.authorId)}
             >
               <DeletePost />
-              <UpdatePost post={post} />
+              <UpdatePost />
             </AuthorizationUI>
           </div>
         </div>
@@ -50,7 +50,7 @@ const SinglePost = () => {
           />
         )}
       </div>
-      <CommentForm />
+      <CreateComment />
       <CommentList />
     </ProtectedLayout>
   )

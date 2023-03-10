@@ -7,15 +7,16 @@ import { Label } from '@/core/components/ui/FormFields/Label'
 import Modal from '@/core/components/ui/Modal'
 import { Spinner } from '@/core/components/ui/Spinner'
 import { toastError } from '@/core/utils'
-import { PostDTO } from '@/views/Posts/types'
-import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useState } from 'react'
+import React, { Dispatch, useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { useParams } from 'react-router-dom'
 import { z } from 'zod'
-import { useUpdatePost } from '../apis/updatePost'
+import { usePost } from '../../apis/getPost'
+import { useUpdatePost } from '../../apis/updatePost'
+
+type Props = { isOpen: boolean; setIsOpen: Dispatch<React.SetStateAction<boolean>> }
 
 type UpdatePostForm = {
   title: string
@@ -27,10 +28,11 @@ const schema = z.object({
   content: z.string().optional(),
 })
 
-const UpdatePost = ({ post }: { post: PostDTO }) => {
+const UpdatePostModal = ({ isOpen, setIsOpen }: Props) => {
   const { id } = useParams()
+  const { data: post } = usePost(id as string)
+
   if (!id) return null
-  const [isOpen, setIsOpen] = useState(false)
   const updatePostMutation = useUpdatePost(id)
   const {
     control,
@@ -41,8 +43,8 @@ const UpdatePost = ({ post }: { post: PostDTO }) => {
   } = useForm<UpdatePostForm>({
     resolver: zodResolver(schema),
     defaultValues: {
-      title: post.title,
-      content: post.content,
+      title: post?.title,
+      content: post?.content,
     },
   })
 
@@ -51,8 +53,8 @@ const UpdatePost = ({ post }: { post: PostDTO }) => {
   useEffect(() => {
     if (isOpen) {
       reset({
-        title: post.title,
-        content: post.content,
+        title: post?.title,
+        content: post?.content,
       })
     }
   }, [isOpen, reset, post])
@@ -71,26 +73,8 @@ const UpdatePost = ({ post }: { post: PostDTO }) => {
       },
     )
   }
-
   return (
-    <Modal
-      isOpen={isOpen}
-      setIsOpen={setIsOpen}
-      title='Update post'
-      triggerButton={
-        <Button
-          title='Update post'
-          onClick={() => setIsOpen(true)}
-          className='bg-transparent !text-red-400 ml-auto'
-        >
-          {updatePostMutation.isLoading ? (
-            <Spinner size='sm' />
-          ) : (
-            <PencilSquareIcon className='w-5 h-5' />
-          )}
-        </Button>
-      }
-    >
+    <Modal isOpen={isOpen} setIsOpen={setIsOpen} title='Update post'>
       <form onSubmit={handleSubmit(onSubmit)} className='flex gap-4 flex-col'>
         <FormControl>
           <Label>Name</Label>
@@ -117,4 +101,4 @@ const UpdatePost = ({ post }: { post: PostDTO }) => {
   )
 }
 
-export default UpdatePost
+export default UpdatePostModal
