@@ -1,0 +1,29 @@
+on:
+  push:
+    branches:
+      - master
+
+env:
+  VITE_BASE_URL: ${{ VITE_BASE_URL }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: install package
+        run: |
+          cd frontend && npm pkg delete scripts.prepare && rm -rf node_modules && yarn install --frozen-lockfile && yarn build
+          cd ../backend && rm -rf node_modules && yarn install --frozen-lockfile && yarn build
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOST }}
+      - name: Deploy with rsync
+        run: |
+          rsync -avz -e ssh --exclude={'.git','.github','.gitignore'} frontend/dist/ ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }}:${{ secrets.FRONTEND_DEPLOY_DIR }} --delete-after
+          rsync -avz -e ssh --exclude={'.git','.github','.gitignore'} backend/dist/ ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }}:${{ secrets.BACKEND_DEPLOY_DIR }}
