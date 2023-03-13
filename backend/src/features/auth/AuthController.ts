@@ -16,7 +16,8 @@ import { signJwt, verifyJwt } from './utils';
 const cookieOptions = {
   domain: baseConfig.domain, // need for setting cookie on production, two subdomains won't understand cookie from each other without domain attribute
   maxAge: baseConfig.accessTokenExpiration,
-  httpOnly: true
+  httpOnly: true,
+  secure: true
 };
 
 class AuthController {

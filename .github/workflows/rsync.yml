@@ -4,7 +4,7 @@ on:
       - master
 
 env:
-  VITE_BASE_URL: ${{ VITE_BASE_URL }}
+  VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
 
 jobs:
   deploy:
