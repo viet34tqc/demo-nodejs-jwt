@@ -11,4 +11,4 @@ COPY . .
 #Exposing the container to run on this port 3000
 EXPOSE 3000
 #Command to start the Docker container for the frontend React.js application
-CMD ["npm", "run", "start"]
+CMD ["yarn", "run", "start"]

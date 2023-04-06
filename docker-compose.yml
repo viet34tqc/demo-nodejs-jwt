@@ -1,15 +1,13 @@
 services:
   db:
     image: mysql:8.0
-    env_file: ./backend/.env
     environment:
-      - MYSQL_ROOT_PASSWORD=''
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_ROOT_PASSWORD=
       - MYSQL_DATABASE=demo-nodejs-jwt
-    ports:
-      - 3306:3306
+    restart: always
     volumes:
       - db:/var/lib/mysql
-    container_name: database
     networks:
       - backend
       - frontend
@@ -17,7 +15,7 @@ services:
     depends_on:
       - db
     build: ./backend
-    env_file: ./backend/.env
+    restart: always
     ports:
       # Host port:Container port
       - 3001:3001
@@ -26,7 +24,8 @@ services:
       - backend
   frontend:
     depends_on:
-      - backend
+      backend:
+        condition: service_completed_successfully
     build: ./frontend
     networks:
       - frontend
