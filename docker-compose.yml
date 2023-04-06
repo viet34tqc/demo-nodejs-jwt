@@ -1,0 +1,37 @@
+services:
+  db:
+    image: mysql:8.0
+    env_file: ./backend/.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=''
+      - MYSQL_DATABASE=demo-nodejs-jwt
+    ports:
+      - 3306:3306
+    volumes:
+      - db:/var/lib/mysql
+    container_name: database
+    networks:
+      - backend
+      - frontend
+  backend:
+    depends_on:
+      - db
+    build: ./backend
+    env_file: ./backend/.env
+    ports:
+      # Host port:Container port
+      - 3001:3001
+    container_name: backend
+    networks:
+      - backend
+  frontend:
+    depends_on:
+      - backend
+    build: ./frontend
+    networks:
+      - frontend
+volumes:
+  db:
+networks:
+  backend:
+  frontend:
