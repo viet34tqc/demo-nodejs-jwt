@@ -13,6 +13,7 @@ RUN npm run build
 FROM nginx:1.17.0-alpine
 
 COPY --from=build-stage /frontend/dist /usr/share/nginx/html
+COPY /docker/default.conf /etc/nginx/conf.d/default.conf
 
 # Nginx runs in foreground (debug mode)
 CMD nginx -g 'daemon off;'
