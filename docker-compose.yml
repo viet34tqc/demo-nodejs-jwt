@@ -1,19 +1,30 @@
+# This is just for demo
+# In practical, frontend and backend folder will have its own docker-compose file
+
 services:
-  db:
+  mysql:
     image: mysql:8.0
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
       - MYSQL_ROOT_PASSWORD=
       - MYSQL_DATABASE=demo-nodejs-jwt
     restart: always
+    ports:
+      - 3306:3306
     volumes:
       - db:/var/lib/mysql
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-uroot', '-ppass']
+      interval: 5s
+      timeout: 5s
+      retries: 20
     networks:
       - backend
       - frontend
   backend:
     depends_on:
-      - db
+      mysql:
+        condition: service_healthy
     build: ./backend
     restart: always
     ports:
@@ -24,8 +35,11 @@ services:
       - backend
   frontend:
     depends_on:
-      backend:
-        condition: service_completed_successfully
+      - backend
+    # We are not using volumes to mount build folder in frontend into nginx
+    # Instead, we will run yarn dev like normal
+    ports:
+      - 5173:80
     build: ./frontend
     networks:
       - frontend

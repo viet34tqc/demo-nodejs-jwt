@@ -1,14 +1,18 @@
-# It uses node:18-alpine as the base image for the frontend React.js application
-FROM node:18-alpine
-# Creating the working directory named `app`
-WORKDIR /app
-# Copying all the tools and dependencies in the package.json file to the working directory `app`
+# Stage 1
+FROM node:18-alpine as build-stage
+
+WORKDIR /frontend
 COPY package.json yarn.lock ./
-#Installing all the tools and dependencies in the container
 RUN npm install
-#Copying all the application source code and files to the working directory `app`
 COPY . .
-#Exposing the container to run on this port 3000
-EXPOSE 3000
-#Command to start the Docker container for the frontend React.js application
-CMD ["yarn", "run", "start"]
+ENV VITE_BASE_URL=http://localhost:3001/api/v1/
+
+RUN npm run build
+
+# Stage 2
+FROM nginx:1.17.0-alpine
+
+COPY --from=build-stage /frontend/dist /usr/share/nginx/html
+
+# Nginx runs in foreground (debug mode)
+CMD nginx -g 'daemon off;'
