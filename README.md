@@ -1,5 +1,12 @@
 # Demo NodeJS + ReactJS
 
+## How to setup
+
+Create an .env file in backend folder from .env.sample to connect to your database
+Create an .env file in frontend folder from .env.sample to connect to your api
+
+Or just run `docker compose up -d`
+
 ## Tech stack
 
 ### Backend
@@ -43,7 +50,7 @@
   - PUT: '/api/v1/profile/'
   - PUT: '/api/v1/posts/:id'
 
-- Protected route
+- Protected routes
   - posts
   - posts/:id
   - profile
