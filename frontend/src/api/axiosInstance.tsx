@@ -10,7 +10,11 @@ const axiosInstance = axios.create({
 })
 
 axiosInstance.interceptors.response.use(
-  (response) => response.data.data, // Response format is {success: boolean, data: data} so we extract data from object already here
+  (response) => {
+    const url = response.config.url
+    if (!url || ['login', 'refreshToken'].some((route) => url.includes(route))) return response
+    return response.data.data
+  }, // Response format is {success: boolean, data: data} so we extract data from object already here
   async (error) => {
     const originalRequest = error.config
     if (error?.response?.status === 403 && !originalRequest._retry) {
