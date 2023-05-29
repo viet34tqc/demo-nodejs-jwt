@@ -37,7 +37,7 @@ const Login = () => {
       },
       onError: (error) => {
         if (error instanceof AxiosError) {
-          toast(error?.response?.data.message)
+          toast(error?.response?.data.message || 'Network Error')
         }
       },
     })

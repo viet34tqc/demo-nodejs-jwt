@@ -1,40 +1,39 @@
 {
   "scripts": {
-    "start": "nodemon",
+    "start": "ts-node-dev --respawn --transpile-only ./src/index.ts",
     "build": "rimraf ./dist && tsc",
     "start-prod": "npm run build && node dist/index.js",
     "lint": "eslint . --ext .ts",
     "prettier": "prettier --config .prettierrc src/**/*.ts --write"
   },
   "dependencies": {
-    "@prisma/client": "^4.10.1",
+    "@prisma/client": "^4.14.1",
     "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
-    "mysql2": "^3.1.0",
-    "zod": "^3.20.6"
+    "mysql2": "^3.3.3",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
-    "@types/jsonwebtoken": "^9.0.1",
-    "@types/node": "^18.11.19",
-    "@typescript-eslint/eslint-plugin": "^5.51.0",
-    "@typescript-eslint/parser": "^5.51.0",
-    "eslint": "^8.33.0",
-    "eslint-config-prettier": "^8.6.0",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/node": "^18.16.16",
+    "@typescript-eslint/eslint-plugin": "^5.59.7",
+    "@typescript-eslint/parser": "^5.59.7",
+    "eslint": "^8.41.0",
+    "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.3",
-    "nodemon": "^2.0.20",
-    "prettier": "^2.8.4",
-    "prisma": "^4.10.1",
-    "rimraf": "^4.1.2",
-    "ts-node": "^10.9.1",
+    "prettier": "^2.8.8",
+    "prisma": "^4.14.1",
+    "rimraf": "^4.4.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^4.9.5"
   }
 }
