@@ -1,14 +1,16 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
-import express from 'express';
-import initUserRoutes from './features/auth/authRoutes';
-import initPostRoutes from './features/post/postRoutes';
 dotenv.config();
+
+import express from 'express';
+import initPostRoutes from './features/post/postRoutes';
+
 const app = express();
 
 // Import baseConfig after running dotenv
 import { baseConfig } from './config/baseConfig';
+import initAuthRoutes from './features/auth/authRoutes';
 import initCommentRoutes from './features/comment/commentRoutes';
 
 // Setup CORS
@@ -22,10 +24,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Routes
-initUserRoutes(app);
+initAuthRoutes(app);
 initPostRoutes(app);
 initCommentRoutes(app);
 
-app.listen(baseConfig.port, () => {
-  console.log(`Server running at port ${baseConfig.port}`);
+app.listen(process.env.PORT, () => {
+  console.log(`Server running at port ${process.env.PORT}`);
 });
