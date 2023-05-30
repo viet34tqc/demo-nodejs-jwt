@@ -1,7 +1,9 @@
+import * as dotenv from 'dotenv';
+// Need to put the dotenv.config() at the very top (before running express) to make env variables accessible.
+dotenv.config();
+
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import * as dotenv from 'dotenv';
-dotenv.config();
 
 import express from 'express';
 import initPostRoutes from './features/post/postRoutes';

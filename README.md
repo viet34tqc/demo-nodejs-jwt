@@ -15,8 +15,7 @@ Or just run `docker compose up -d`
 - jsonwebtoken
 - prisma
 - Dev packages:
-  - ts-node: Running TS directly without having to wait for it to compiled
-  - nodemon: watch for changes in our code and automatically restart when a file is changed
+  - ts-node-dev: Running TS directly without having to wait for it to compiled and watch for changes in our code and automatically restart when a file is changed (ts-node combines with nodemon)
   - rimraf: rm -rf for nodejs
   - eslint, prettier packages: see backend/package.json
   - husky: enforce coding convention
@@ -32,6 +31,7 @@ Or just run `docker compose up -d`
 ## Features
 
 - Authentication using JWT via cookie
+- Login via Google using OAuth2
 - Display posts with pagination
 - User can create, update, delete post and comments for each post
 - Admin user can delete comment while Subscriber user cannot

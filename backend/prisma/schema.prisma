@@ -27,6 +27,7 @@ model User {
   name     String?   @db.VarChar(255)
   password String
   role     Role      @default(SUBSCRIBER)
+  provider Provider  @default(SITE)
   posts    Post[]
   comments Comment[]
 }
@@ -44,4 +45,9 @@ model Comment {
 enum Role {
   ADMIN
   SUBSCRIBER
+}
+
+enum Provider {
+  SITE
+  GOOGLE
 }

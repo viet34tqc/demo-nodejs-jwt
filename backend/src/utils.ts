@@ -8,6 +8,8 @@ export const getErrorMessage = (error: unknown) => {
   if (error instanceof Error) {
     return { success: false, message: error.message };
   }
-
-  return { success: false, message: error };
+  if (typeof error === 'string') {
+    return { success: false, message: error };
+  }
+  return { success: false, message: 'Undefined error' };
 };

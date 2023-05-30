@@ -9,10 +9,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { AxiosError } from 'axios'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import { useLogin } from '../apis/login'
 import { LoginCredentialsDTO } from '../types'
+import { getGoogleUrl } from './utils'
 
 const schema = z.object({
   email: z.string().email(),
@@ -21,6 +22,8 @@ const schema = z.object({
 
 const Login = () => {
   const navigate = useNavigate()
+  const location = useLocation()
+  const from = ((location.state as any)?.from.pathname as string) || '/posts'
   const { mutate, isLoading: isLoggingIn } = useLogin()
   const {
     register,
@@ -42,7 +45,6 @@ const Login = () => {
       },
     })
   }
-
   return (
     <AuthLayout title='Login to your account'>
       <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4 child:text-[14px]'>
@@ -62,6 +64,10 @@ const Login = () => {
           {isLoggingIn && <Spinner size='sm' className='text-current' />}
         </Button>
       </form>
+      <div className='text-center my-2'>Or</div>
+      <Button type='submit' className='w-full gap-2' disabled={isLoggingIn}>
+        <a href={getGoogleUrl(from)}>Login with Google</a>
+      </Button>
 
       <div className='flex justify-end mt-4'>
         <Link to='../register' className='font-medium text-sm text-blue-600 hover:text-blue-500'>

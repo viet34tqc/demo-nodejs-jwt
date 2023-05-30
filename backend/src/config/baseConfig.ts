@@ -9,5 +9,9 @@ export const baseConfig = {
   accessTokenSecret: process.env.ACCESS_SECRET || 'demo-nodejs-jwt',
   refreshTokenSecret: process.env.REFRESH_SECRET || 'demo-nodejs-jwt-refresh',
   accessTokenExpiration: Number(process.env.ACCESS_EXPIRATION) * 1000 || 3600 * 1000, // 1 hour
-  refreshTokenExpiration: Number(process.env.REFRESH_EXPIRATION) * 1000 || 31536000 * 1000 // 365 days
+  refreshTokenExpiration: Number(process.env.REFRESH_EXPIRATION) * 1000 || 31536000 * 1000, // 365 days
+
+  GOOGLE_OAUTH_CLIENT_ID: process.env.GOOGLE_OAUTH_CLIENT_ID,
+  GOOGLE_OAUTH_CLIENT_SECRET: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
+  GOOGLE_OAUTH_REDIRECT: process.env.GOOGLE_OAUTH_REDIRECT
 };

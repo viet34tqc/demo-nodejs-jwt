@@ -7,6 +7,7 @@ import { baseConfig } from '../../config/baseConfig';
 import prisma from '../../config/prismaClient';
 import { getErrorMessage } from '../../utils';
 import { EMAIL_EXISTED, INVALID_PASS, NO_REFRESH_TOKEN, NO_TOKEN, USER_NOT_EXISTED } from './constants';
+import { getGoogleOauthToken, getGoogleUser } from './services';
 import { signJwt, verifyJwt } from './utils';
 
 // We can also declare this variable as class property
@@ -21,7 +22,19 @@ const cookieOptions = {
 };
 
 class AuthController {
-  async issueCookie(req: Request, res: Response, user: User) {
+  returnUserData(res: Response, user: User) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...rest } = user;
+
+    res.status(200).json({
+      success: true,
+      data: {
+        ...rest
+      }
+    });
+  }
+
+  async issueCookie(res: Response, user: User) {
     // Generate JWT tokens
     // We are only including user id in the payload for security
     const accessToken = signJwt({ id: user.id }, baseConfig.accessTokenSecret, baseConfig.accessTokenExpiration);
@@ -43,16 +56,6 @@ class AuthController {
       ...cookieOptions,
       maxAge: baseConfig.refreshTokenExpiration
     });
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...rest } = user;
-
-    res.status(200).json({
-      success: true,
-      data: {
-        ...rest
-      }
-    });
   }
   async register(req: Request, res: Response) {
     const { name, email, password, role } = req.body;
@@ -65,7 +68,8 @@ class AuthController {
           password: hashSync(password, 8)
         }
       });
-      this.issueCookie(req, res, user);
+      this.issueCookie(res, user);
+      this.returnUserData(res, user);
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
         return res.status(404).send(getErrorMessage(EMAIL_EXISTED));
@@ -87,15 +91,62 @@ class AuthController {
         return res.status(404).send(getErrorMessage(USER_NOT_EXISTED));
       }
 
+      if (user.provider !== 'SITE') {
+        return res.status(401).send(getErrorMessage(`Use ${user.provider} OAuth2 instead`));
+      }
+
       const isPasswordValidated = compareSync(req.body.password, user.password as string);
       if (!isPasswordValidated) {
         return res.status(401).send(getErrorMessage(INVALID_PASS));
       }
-      this.issueCookie(req, res, user);
+      this.issueCookie(res, user);
+      this.returnUserData(res, user);
     } catch (error) {
       res.status(404).send(getErrorMessage(error));
     }
   }
+  async loginWithGoogle(req: Request, res: Response) {
+    try {
+      const code = req.query.code as string;
+      const pathUrl = (req.query.state as string) || '/';
+
+      if (!code) {
+        return res.status(401).send(getErrorMessage('Authorization code not provided!'));
+      }
+
+      const { id_token, access_token } = await getGoogleOauthToken({ code });
+
+      const { name, verified_email, email } = await getGoogleUser({
+        id_token,
+        access_token
+      });
+
+      if (!verified_email) {
+        return res.status(403).send(getErrorMessage('Google account not verified'));
+      }
+
+      const user = await prisma.user.upsert({
+        where: { email },
+        create: {
+          name,
+          email,
+          password: '',
+          role: 'SUBSCRIBER',
+          provider: 'GOOGLE'
+        },
+        update: { name, email, provider: 'GOOGLE' }
+      });
+
+      //if (!user) return res.redirect(`${baseConfig.origin}/oauth/error`);
+
+      this.issueCookie(res, user);
+
+      return res.redirect(`${baseConfig.origin}${pathUrl}`);
+    } catch (error) {
+      res.status(404).send(getErrorMessage('Failed to authorize Google User'));
+    }
+  }
+
   refreshToken(req: Request, res: Response) {
     const refreshToken = req.cookies.refreshTokenCookie || req.header('Authorization')?.replace('Bearer ', '');
     if (!refreshToken) {
