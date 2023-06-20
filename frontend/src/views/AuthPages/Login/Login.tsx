@@ -83,9 +83,10 @@ const Login = () => {
         </a>
       </Button>
 
-      <div className='flex justify-end mt-4'>
-        <Link to='../register' className='font-medium text-sm text-blue-600 hover:text-blue-500'>
-          Register
+      <div className='flex items-center justify-end mt-4 text-sm'>
+        Don&apos;t have an account? &nbsp;
+        <Link to='../register' className='font-medium text-blue-600 hover:text-blue-500'>
+          Sign up!
         </Link>
       </div>
     </AuthLayout>
