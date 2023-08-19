@@ -22,7 +22,7 @@ jobs:
       - name: install packages
         run: |
           cd frontend && npm pkg delete scripts.prepare && rm -rf node_modules && pnpm install && pnpm build
-          cd ../backend && rm -rf node_modules && pnpm install && pnpm build
+          cd ../backend && rm -rf node_modules && pnpm install && npx prisma generate && pnpm build
 
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
